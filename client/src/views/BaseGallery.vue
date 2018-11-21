@@ -1,17 +1,16 @@
 <template>
     <div>
-        <h1>Gallery</h1>
-        <uploadOl/>
+        <uploadOverlay/>
         <router-view></router-view>
     </div>
 </template>
 
 <script>
     import postJson from '../mixins/postJson'
-    import uploadOl from '../components/UploadDialog'
+    import uploadOverlay from '../components/UploadDialog'
 
     export default {
-        components: {uploadOl},
+        components: {uploadOverlay},
         name: "BaseGallery",
         beforeCreate() {
             postJson('/getImageJson', {}).then(json => {

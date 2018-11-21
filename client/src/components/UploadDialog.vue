@@ -1,7 +1,7 @@
 <template>
     <v-layout row justify-center>
         <v-dialog v-model="dialog" persistent max-width="600px">
-            <v-btn slot="activator" color="primary" dark>Open Dialog</v-btn>
+            <v-btn slot="activator" color="primary" dark>Upload Pictures</v-btn>
             <v-card>
                 <v-card-title>
                     <span class="headline">Picture Uploader</span>

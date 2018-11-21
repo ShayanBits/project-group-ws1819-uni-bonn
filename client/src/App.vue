@@ -1,10 +1,20 @@
 <template>
     <div id="app">
         <div id="nav">
-            <router-link to="/">Home</router-link>
-            <router-link to="/gallery">Gallery</router-link>
-            <router-link to="/blog">Blog</router-link>
-            <router-link to="/newsletter">Newsletter</router-link>
+            <ul class="navmenu">
+                <li>
+                    <router-link to="/about">Home</router-link>
+                </li>
+                <li>
+                    <router-link to="/gallery">Gallery</router-link>
+                </li>
+                <li>
+                    <router-link to="/blog">Blog</router-link>
+                </li>
+                <li>
+                    <router-link to="/newsletter">Newsletter</router-link>
+                </li>
+            </ul>
         </div>
         <div id="content">
             <router-view/>
@@ -20,28 +30,57 @@
         -moz-osx-font-smoothing: grayscale;
         text-align: center;
         color: #2c3e50;
-        height: 100%;
         display: flex;
         flex-direction: column;
+        height: 100vh;
     }
 
     #nav {
-        padding-top: 20px;
-        display: flex;
-        justify-content: space-around;
     }
 
     #nav a {
         font-weight: bold;
-        color: #2c3e50;
+        color: #637688;
     }
 
     #nav a.router-link-exact-active {
         color: #42b983;
     }
 
-    #content {
+    ul.navmenu {
+        left: 0;
+        top: 0;
+        width: 100%;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #2c3e50;
+        display: flex;
+        flex-direction: row; /* keep the contents in a row */
+        flex-wrap: wrap; /* bring contents to the next line if necessary */
+        justify-content: center; /* keep the contents in the middle */
         flex-grow: 1;
+    }
+
+    ul.navmenu li {
+        float: left;
+    }
+
+    ul.navmenu li a {
+        color: white;
+        display: block;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
+
+    ul.navmenu li a:hover {
+        background-color: darkslategray;
+    }
+
+    ul.navmenu li a:active {
+        background-color: darkslategray;
     }
 </style>
 <script>
