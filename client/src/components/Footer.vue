@@ -1,5 +1,7 @@
 <template>
-  <div>&copy; {{year}} Otto</div>
+  <footer>
+    <div>© {{year}} LOGO</div>
+  </footer>
 </template>
 
 <script>
@@ -14,11 +16,14 @@
 </script>
 
 <style scoped>
-  div {
-    height: 20px;
-    border-top: 1px solid black;
-    padding: 10px;
-    margin-top: 20px;
-    background-color: lightgrey;
+  footer {
+    margin-top: 5px;
+    background-color: #2c3e50;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    color: #637688;
   }
 </style>
