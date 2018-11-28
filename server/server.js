@@ -13,10 +13,10 @@ const storage = multer.diskStorage({
     cb(null, 'public/img/')
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + mime.getExtension(file.mimetype))
+    cb(null, Date.now() + '.' + mime.getExtension(file.mimetype))
   }
 })
-const upload = multer(storage)
+const upload = multer({storage})
 
 mongoose.connect(mongoUrl + '/' + mongoDbName, {useNewUrlParser: true})
 
@@ -27,13 +27,14 @@ app.use(express.static(__dirname + "/public"))
 
 app.post('/api/getImageJson', (req, res) => {
   Image.find((err, images) => {
-    if (err)
     res.send({images})
   })
 })
 
 app.post('/api/images/upload', upload.single('image'), (req, res, next) => {
-  res.send('image uploaded')
+  Image.create({label: req.body.label, path: req.file.filename}, (err, i) => {
+    res.send('image saved')
+  })
 })
 
 app.get('/insertImages', () => {
