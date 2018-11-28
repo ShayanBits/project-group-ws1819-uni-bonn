@@ -42,7 +42,7 @@ export default new Router({
         },
         {
             path: '/newsletter',
-            name: 'asd',
+            name: 'newsletter',
             component: () => import('./views/Newsletter.vue')
         }
     ]
