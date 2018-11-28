@@ -1,7 +1,9 @@
 <template>
     <v-layout row justify-center>
         <v-dialog v-model="dialog" persistent max-width="600px">
-            <v-btn slot="activator" color="primary" dark>Upload Pictures</v-btn>
+            <v-btn slot="activator" fab dark color="indigo">
+                <v-icon dark>add</v-icon>
+            </v-btn>
             <v-card>
                 <v-card-title>
                     <v-flex xs12>
