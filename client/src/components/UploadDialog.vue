@@ -4,13 +4,25 @@
             <v-btn slot="activator" color="primary" dark>Upload Pictures</v-btn>
             <v-card>
                 <v-card-title>
-                    <span class="headline">Picture Uploader</span>
+                    <v-flex xs12>
+                        <span class="headline">Picture Uploader</span>
+                    </v-flex>
                 </v-card-title>
                 <v-card-text>
                     <v-container grid-list-md>
                         <v-layout wrap>
                             <v-flex xs12>
-                                <v-btn color="blue darken-1" flat @click.native="dialog = false">Choose Picture(s)</v-btn>
+                                <img :src="imageUrl" height="300" v-if="imageUrl"/>
+                            </v-flex>
+                            <v-flex xs12>
+                                <v-btn color="blue darken-1" flat @click='pickFile'>Choose Picture(s)</v-btn>
+                                <input
+                                        type="file"
+                                        style="display: none"
+                                        ref="image"
+                                        accept="image/*"
+                                        @change="onFilePicked"
+                                >
                             </v-flex>
                             <v-flex xs12>
                                 <v-text-field label="Picture name*" required></v-text-field>
@@ -40,7 +52,35 @@
     export default {
         data () {
             return {
-                dialog: false
+                dialog: false,
+                imageName: '',
+                imageUrl: '',
+                imageFile: ''
+            }
+        },
+        methods: {
+            pickFile () {
+                this.$refs.image.click ()
+            },
+
+            onFilePicked (e) {
+                const files = e.target.files
+                if(files[0] !== undefined) {
+                    this.imageName = files[0].name
+                    if(this.imageName.lastIndexOf('.') <= 0) {
+                        return
+                    }
+                    const fr = new FileReader ()
+                    fr.readAsDataURL(files[0])
+                    fr.addEventListener('load', () => {
+                        this.imageUrl = fr.result
+                        this.imageFile = files[0] // this is an image file that can be sent to server...
+                    })
+                } else {
+                    this.imageName = ''
+                    this.imageFile = ''
+                    this.imageUrl = ''
+                }
             }
         }
     }
