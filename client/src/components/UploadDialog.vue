@@ -27,7 +27,7 @@
                                 >
                             </v-flex>
                             <v-flex xs12>
-                                <v-text-field label="Picture name*" required></v-text-field>
+                                <v-text-field label="Picture name*" required v-model="label"/>
                             </v-flex>
                             <v-flex xs12>
                                 <v-autocomplete :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
@@ -43,7 +43,7 @@
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue darken-1" flat @click.native="dialog = false">Close</v-btn>
-                    <v-btn color="blue darken-1" flat @click.native="dialog = false">Upload</v-btn>
+                    <v-btn color="blue darken-1" flat @click.native="dialog = false" @click="upload">Upload</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -57,7 +57,8 @@
                 dialog: false,
                 imageName: '',
                 imageUrl: '',
-                imageFile: ''
+                imageFile: '',
+                label: '',
             }
         },
         methods: {
@@ -83,6 +84,15 @@
                     this.imageFile = ''
                     this.imageUrl = ''
                 }
+            },
+            upload() {
+              const formData = new FormData();
+              formData.append('image', this.imageFile, 'image.jpg')
+              formData.append('label', this.label)
+              fetch('/api/images/upload', {
+                method: 'POST',
+                body: formData,
+              })
             }
         }
     }
