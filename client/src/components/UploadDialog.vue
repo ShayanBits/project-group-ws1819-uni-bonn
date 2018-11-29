@@ -19,8 +19,8 @@
                             <v-flex xs12>
                                 <v-btn color="blue darken-1" flat @click='pickFile'>Choose Picture(s)</v-btn>
                                 <!--
-                                #TODO check if the data is an actual image
-                                #TODO uploading pictures without name should be forbidden
+                                TODO check if the data is an actual image
+                                TODO uploading pictures without name should be forbidden
                                     -->
                                 <input
                                         type="file"
