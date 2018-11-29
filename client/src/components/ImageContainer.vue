@@ -20,7 +20,7 @@
     },
     computed: {
       fullPath() {
-        return '/img/' + this.path + '.jpg'
+        return '/img/' + this.path
       },
     }
   }
