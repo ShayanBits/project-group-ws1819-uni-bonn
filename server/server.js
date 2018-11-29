@@ -37,22 +37,6 @@ app.post('/api/images/upload', upload.single('image'), (req, res, next) => {
   })
 })
 
-app.get('/insertImages', () => {
-  client.connect(function () {
-    const db = client.db(mongoDbName)
-    db.collection('images_metadata').insertMany([
-      {label: 'Butterfly', path: 'butterfly'},
-      {label: 'Ducks', path: 'ducks'},
-      {label: 'Fire', path: 'fire'},
-      {label: 'Kings Canyon', path: 'kings_canyon'},
-      {label: 'Koalas', path: 'koalas'},
-      {label: 'Pink Flower', path: 'pink_flower'},
-      {label: 'Stairs', path: 'stairs'},
-      {label: 'Uluru', path: 'uluru'},
-      {label: 'Yellow Flower', path: 'yellow_flower'}
-    ])
-  })
-})
 
 app.listen(port, '0.0.0.0')
 
