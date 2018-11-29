@@ -1,6 +1,6 @@
 <template>
     <v-layout row justify-center>
-        <v-dialog v-model="dialog" persistent max-width="600px">
+        <v-dialog v-model="dialog"  width="500px">
             <v-btn slot="activator" fab dark color="indigo">
                 <v-icon dark>add</v-icon>
             </v-btn>
@@ -34,11 +34,12 @@
                                 <v-text-field label="Picture name*" required v-model="label"/>
                             </v-flex>
                             <v-flex xs12>
-                                <v-autocomplete :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                                              label="Tags"
-                                              hint="you can write verious tags divided by a comma in between: sky, city, cars"
-                                              required
-                                              multiple></v-autocomplete>
+                                <v-autocomplete v-model="selectedTags"
+                                                :items="tags"
+                                                label="Tags"
+                                                hint="you can choose multiple tags"
+                                                multiple>
+                                </v-autocomplete>
                             </v-flex>
                         </v-layout>
                     </v-container>
@@ -63,6 +64,8 @@
                 imageUrl: '',
                 imageFile: '',
                 label: '',
+                tags: ['Benz', 'cat', 'Football', 'Bread', 'Bonn', 'Sky', 'Uni', 'Coding', 'Family'],
+                selectedTags: []
             }
         },
         methods: {
@@ -81,7 +84,7 @@
                     fr.readAsDataURL(files[0])
                     fr.addEventListener('load', () => {
                         this.imageUrl = fr.result
-                        this.imageFile = files[0] // this is an image file that can be sent to server...
+                        this.imageFile = files[0]
                     })
                 } else {
                     this.imageName = ''
@@ -90,13 +93,14 @@
                 }
             },
             upload() {
-              const formData = new FormData();
-              formData.append('image', this.imageFile, 'image.jpg')
-              formData.append('label', this.label)
-              fetch('/api/images/upload', {
-                method: 'POST',
-                body: formData,
-              })
+                const formData = new FormData();
+                let temp =this.selectedTags; // An array from every selected tag which can be sent to server and saved in DB
+                formData.append('image', this.imageFile, 'image.jpg')
+                formData.append('label', this.label)
+                fetch('/api/images/upload', {
+                    method: 'POST',
+                    body: formData,
+                })
             }
         }
     }

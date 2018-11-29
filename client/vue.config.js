@@ -3,6 +3,7 @@ module.exports = {
     watchOptions: {
       poll: 1000,
     },
+      devtool: 'source-map'
   },
   devServer: {
     proxy: {

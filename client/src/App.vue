@@ -1,5 +1,5 @@
 <template>
-    <div id="app">
+    <div data-app id="app">
         <div id="nav">
             <ul class="navmenu">
                 <li>
