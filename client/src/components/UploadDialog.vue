@@ -34,11 +34,14 @@
                                 <v-text-field label="Picture name*" required v-model="label"/>
                             </v-flex>
                             <v-flex xs12>
-                                <v-autocomplete :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                                              label="Tags"
-                                              hint="you can write verious tags divided by a comma in between: sky, city, cars"
-                                              required
-                                              multiple></v-autocomplete>
+                                <v-combobox
+                                        v-model="tags"
+                                        label="Tags"
+                                        hint="You can assign multiple tags to your image. Press enter after entering one!"
+                                        required
+                                        multiple
+                                        small-chips
+                                />
                             </v-flex>
                         </v-layout>
                     </v-container>
@@ -56,28 +59,29 @@
 
 <script>
     export default {
-        data () {
+        data() {
             return {
                 dialog: false,
                 imageName: '',
                 imageUrl: '',
                 imageFile: '',
                 label: '',
+                tags: '',
             }
         },
         methods: {
-            pickFile () {
-                this.$refs.image.click ()
+            pickFile() {
+                this.$refs.image.click()
             },
 
-            onFilePicked (e) {
+            onFilePicked(e) {
                 const files = e.target.files
-                if(files[0] !== undefined) {
+                if (files[0] !== undefined) {
                     this.imageName = files[0].name
-                    if(this.imageName.lastIndexOf('.') <= 0) {
+                    if (this.imageName.lastIndexOf('.') <= 0) {
                         return
                     }
-                    const fr = new FileReader ()
+                    const fr = new FileReader()
                     fr.readAsDataURL(files[0])
                     fr.addEventListener('load', () => {
                         this.imageUrl = fr.result
@@ -90,14 +94,16 @@
                 }
             },
             upload() {
-              const formData = new FormData();
-              formData.append('image', this.imageFile, 'image.jpg')
-              formData.append('label', this.label)
-              fetch('/api/images/upload', {
-                method: 'POST',
-                body: formData,
-              })
-            }
-        }
+                console.log(JSON.stringify(this.tags))
+                const formData = new FormData()
+                formData.append('image', this.imageFile, 'image.jpg')
+                formData.append('label', this.label)
+                formData.append('tags', JSON.stringify(this.tags))
+                fetch('/api/images/upload', {
+                    method: 'POST',
+                    body: formData,
+                })
+            },
+        },
     }
 </script>
