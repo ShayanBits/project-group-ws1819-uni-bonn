@@ -1,6 +1,6 @@
 <template>
     <v-layout row justify-center>
-        <v-dialog v-model="dialog"  width="500px">
+        <v-dialog v-model="dialog" persistent max-width="600px">
             <v-btn slot="activator" fab dark color="indigo">
                 <v-icon dark>add</v-icon>
             </v-btn>
@@ -34,12 +34,14 @@
                                 <v-text-field label="Picture name*" required v-model="label"/>
                             </v-flex>
                             <v-flex xs12>
-                                <v-autocomplete v-model="selectedTags"
-                                                :items="tags"
-                                                label="Tags"
-                                                hint="you can choose multiple tags"
-                                                multiple>
-                                </v-autocomplete>
+                                <v-combobox
+                                        v-model="tags"
+                                        label="Tags"
+                                        hint="You can assign multiple tags to your image. Press enter after entering one!"
+                                        required
+                                        multiple
+                                        small-chips
+                                />
                             </v-flex>
                         </v-layout>
                     </v-container>
@@ -57,34 +59,33 @@
 
 <script>
     export default {
-        data () {
+        data() {
             return {
                 dialog: false,
                 imageName: '',
                 imageUrl: '',
                 imageFile: '',
                 label: '',
-                tags: ['Benz', 'cat', 'Football', 'Bread', 'Bonn', 'Sky', 'Uni', 'Coding', 'Family'],
-                selectedTags: []
+                tags: '',
             }
         },
         methods: {
-            pickFile () {
-                this.$refs.image.click ()
+            pickFile() {
+                this.$refs.image.click()
             },
 
-            onFilePicked (e) {
+            onFilePicked(e) {
                 const files = e.target.files
-                if(files[0] !== undefined) {
+                if (files[0] !== undefined) {
                     this.imageName = files[0].name
-                    if(this.imageName.lastIndexOf('.') <= 0) {
+                    if (this.imageName.lastIndexOf('.') <= 0) {
                         return
                     }
-                    const fr = new FileReader ()
+                    const fr = new FileReader()
                     fr.readAsDataURL(files[0])
                     fr.addEventListener('load', () => {
                         this.imageUrl = fr.result
-                        this.imageFile = files[0]
+                        this.imageFile = files[0] // this is an image file that can be sent to server...
                     })
                 } else {
                     this.imageName = ''
@@ -93,15 +94,16 @@
                 }
             },
             upload() {
-                const formData = new FormData();
-                let temp =this.selectedTags; // An array from every selected tag which can be sent to server and saved in DB
+                console.log(JSON.stringify(this.tags))
+                const formData = new FormData()
                 formData.append('image', this.imageFile, 'image.jpg')
                 formData.append('label', this.label)
+                formData.append('tags', JSON.stringify(this.tags))
                 fetch('/api/images/upload', {
                     method: 'POST',
                     body: formData,
                 })
-            }
-        }
+            },
+        },
     }
 </script>
