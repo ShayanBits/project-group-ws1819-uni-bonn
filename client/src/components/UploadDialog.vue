@@ -2,7 +2,7 @@
     <v-layout row justify-center>
         <v-dialog v-model="dialog" persistent max-width="600px">
             <v-btn slot="activator" fab dark color="indigo">
-                <v-icon dark>add</v-icon>
+                <v-icon dark @click='callFetchTags'>add</v-icon>
             </v-btn>
             <v-card>
                 <v-card-title>
@@ -40,6 +40,7 @@
                                         hint="You can assign multiple tags to your image. Press enter after entering one!"
                                         required
                                         multiple
+                                        :items="loadedTags"
                                         small-chips
                                 />
                             </v-flex>
@@ -67,9 +68,13 @@
                 imageFile: '',
                 label: '',
                 tags: '',
+                loadedTags: this.$store.getters.updateTagArray
             }
         },
         methods: {
+            callFetchTags(){
+              this.$store.dispatch('fetchTags')
+            },
             pickFile() {
                 this.$refs.image.click()
             },

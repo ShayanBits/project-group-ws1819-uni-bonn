@@ -39,9 +39,15 @@ app.post('/api/getImageJson', (req, res) => {
     })
 })
 
-app.post('/api/getTags', (req, res) => {
+app.post('/api/getTag', (req, res) => {
     const {name} = req.body
     Tag.find({name}, (err, tags) => {
+        res.send(tags)
+    })
+})
+
+app.post('/api/getTags', (req, res) => {
+    Tag.find((err, tags) => {
         res.send(tags)
     })
 })
