@@ -35,14 +35,27 @@
                             </v-flex>
                             <v-flex xs12>
                                 <v-combobox
+                                        :filter="filter"
                                         v-model="tags"
+                                        :search-input.sync="search"
+                                        hide-selected
                                         label="Tags"
                                         hint="You can assign multiple tags to your image. Press enter after entering one!"
                                         required
                                         multiple
                                         :items="loadedTags"
                                         small-chips
-                                />
+                                >
+                                    <template slot="no-data">
+                                        <v-list-tile>
+                                            <v-list-tile-content>
+                                                <v-list-tile-title>
+                                                    No results matching "<strong>{{ search }}</strong>". Press <kbd>enter</kbd> to create a new one
+                                                </v-list-tile-title>
+                                            </v-list-tile-content>
+                                        </v-list-tile>
+                                    </template>
+                                </v-combobox>
                             </v-flex>
                         </v-layout>
                     </v-container>
@@ -67,11 +80,41 @@
                 imageUrl: '',
                 imageFile: '',
                 label: '',
-                tags: '',
-                loadedTags: this.$store.getters.updateTagArray
+                tags:'',
+                search: null
+            }
+        },
+        computed:{
+            loadedTags(){
+                return this.$store.getters.updateTagArray
             }
         },
         methods: {
+            emptyFields(){
+                this.label = ''
+                this.imageName =''
+                this.imageFile = ''
+                this.imageUrl = ''
+                this.tags = ''
+            },
+            edit (index, item) {
+                if (!this.editing) {
+                    this.editing = item
+                    this.index = index
+                } else {
+                    this.editing = null
+                    this.index = -1
+                }
+            },
+            filter (item, queryText, itemText) {
+                if (item.header) return false
+                const hasValue = val => val != null ? val : ''
+                const text = hasValue(itemText)
+                const query = hasValue(queryText)
+                return text.toString()
+                    .toLowerCase()
+                    .indexOf(query.toString().toLowerCase()) > -1
+            },
             callFetchTags(){
               this.$store.dispatch('fetchTags')
             },
@@ -107,7 +150,8 @@
                 fetch('/api/images/upload', {
                     method: 'POST',
                     body: formData,
-                })
+                }).then(this.emptyFields())
+
             },
         },
     }
