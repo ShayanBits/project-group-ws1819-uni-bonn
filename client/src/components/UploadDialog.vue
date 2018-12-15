@@ -2,7 +2,7 @@
     <v-layout row justify-center>
         <v-dialog v-model="dialog" persistent max-width="600px">
             <v-btn slot="activator" fab dark color="indigo">
-                <v-icon dark>add</v-icon>
+                <v-icon dark @click='callFetchTags'>add</v-icon>
             </v-btn>
             <v-card>
                 <v-card-title>
@@ -35,13 +35,27 @@
                             </v-flex>
                             <v-flex xs12>
                                 <v-combobox
+                                        :filter="filter"
                                         v-model="tags"
+                                        :search-input.sync="search"
+                                        hide-selected
                                         label="Tags"
                                         hint="You can assign multiple tags to your image. Press enter after entering one!"
                                         required
                                         multiple
+                                        :items="loadedTags"
                                         small-chips
-                                />
+                                >
+                                    <template slot="no-data">
+                                        <v-list-tile>
+                                            <v-list-tile-content>
+                                                <v-list-tile-title>
+                                                    No results matching "<strong>{{ search }}</strong>". Press <kbd>enter</kbd> to create a new one
+                                                </v-list-tile-title>
+                                            </v-list-tile-content>
+                                        </v-list-tile>
+                                    </template>
+                                </v-combobox>
                             </v-flex>
                         </v-layout>
                     </v-container>
@@ -66,10 +80,44 @@
                 imageUrl: '',
                 imageFile: '',
                 label: '',
-                tags: '',
+                tags:'',
+                search: null
+            }
+        },
+        computed:{
+            loadedTags(){
+                return this.$store.getters.updateTagArray
             }
         },
         methods: {
+            emptyFields(){
+                this.label = ''
+                this.imageName =''
+                this.imageFile = ''
+                this.imageUrl = ''
+                this.tags = ''
+            },
+            edit (index, item) {
+                if (!this.editing) {
+                    this.editing = item
+                    this.index = index
+                } else {
+                    this.editing = null
+                    this.index = -1
+                }
+            },
+            filter (item, queryText, itemText) {
+                if (item.header) return false
+                const hasValue = val => val != null ? val : ''
+                const text = hasValue(itemText)
+                const query = hasValue(queryText)
+                return text.toString()
+                    .toLowerCase()
+                    .indexOf(query.toString().toLowerCase()) > -1
+            },
+            callFetchTags(){
+              this.$store.dispatch('fetchTags')
+            },
             pickFile() {
                 this.$refs.image.click()
             },
@@ -102,7 +150,8 @@
                 fetch('/api/images/upload', {
                     method: 'POST',
                     body: formData,
-                })
+                }).then(this.emptyFields())
+
             },
         },
     }
