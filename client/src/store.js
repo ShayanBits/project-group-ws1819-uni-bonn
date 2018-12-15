@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import postJson from  './mixins/postJson'
+
 
 Vue.use(Vuex);
 
@@ -7,18 +9,32 @@ export default new Vuex.Store({
   state: {
     gallery: {
       images: {}
-    }
+    },
+    savedTags:[]
   },
   mutations: {
     receiveImages(state, payload) {
       state.gallery.images = payload.images
     },
+    receiveTags(state,payload){
+      let savedTags = payload.map(tag => tag.name);
+      state.savedTags = savedTags
+    }
   },
-  // actions: {
-  //   receiveImages({commit}) {
-  //   }
-  // },
+  actions: {
+    // receiveImages({commit}) {
+    // }
+    fetchTags(context){
+      postJson('/getTags', {}).then(json => {
+        let payload = json;
+        context.commit('receiveTags', payload)
+      })
+    }
+  },
   getters: {
+    updateTagArray: (state) => {
+       return state.savedTags
+      },
     metadata: (state) => (id) => {
       const image = state.gallery.images[id]
       return image ? {path: image.path, label: image.label} : {path: '', label: ''}
