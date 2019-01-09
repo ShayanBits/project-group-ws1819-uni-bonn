@@ -3,10 +3,6 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const multer = require('multer')
 const mime = require('mime')
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-
-
 
 const app = express()
 const port = process.env.port || 3000
@@ -47,9 +43,10 @@ const Tag = require('./models/tag')
 app.use(express.static(__dirname + '/public'))
 app.use(bodyParser.json())
 
-const router = express.Router();
-router.use(bodyParser.urlencoded({ extended: false }));
-router.use(bodyParser.json());
+const router = express.Router()
+router.use(bodyParser.urlencoded({ extended: false }))
+router.use(bodyParser.json())
+require('./routes/authentication')(router)
 
 app.post('/api/getImageJson', (req, res) => {
     Image.find((err, images) => {
@@ -93,65 +90,6 @@ app.post('/api/images/upload', upload.single('image'), (req, res, next) => {
         res.send('wrong filetype')
     }
 })
-
-
-// register new user
-
-router.post('/register', function(req, res) {
-    // TODO: anpassung von DB queries zu Mongo DB
-    db.insert([
-            req.body.name,
-            req.body.email,
-            bcrypt.hashSync(req.body.password, 8)
-        ],
-        function (err) {
-            if (err) return res.status(500).send("There was a problem registering the user.")
-            db.selectByEmail(req.body.email, (err,user) => {
-                if (err) return res.status(500).send("There was a problem getting user")
-                let token = jwt.sign({ id: user.id }, config.secret, {expiresIn: 86400 // expires in 24 hours
-                });
-                res.status(200).send({ auth: true, token: token, user: user });
-            });
-        });
-});
-
-
-// Register new admin
-
-router.post('/register-admin', function(req, res) {
-    db.insertAdmin([
-            req.body.name,
-            req.body.email,
-            bcrypt.hashSync(req.body.password, 8),
-            1
-        ],
-        function (err) {
-            if (err) return res.status(500).send("There was a problem registering the user.")
-            db.selectByEmail(req.body.email, (err,user) => {
-                if (err) return res.status(500).send("There was a problem getting user")
-                let token = jwt.sign({ id: user.id }, config.secret, { expiresIn: 86400 // expires in 24 hours
-                });
-                res.status(200).send({ auth: true, token: token, user: user });
-            });
-        });
-});
-
-
-// login
-
-router.post('/login', function (req, res) {
-    db.selectByEmail(req.body.email, (err, user) => {
-        if (err) return res.status(500).send('Error on the server.');
-        if (!user) return res.status(404).send('No user found.');
-        let passwordIsValid = bcrypt.compareSync(req.body.password, user.user_pass);
-        if (!passwordIsValid) return res.status(401).send({auth: false, token: null});
-        let token = jwt.sign({id: user.id}, config.secret, {
-            expiresIn: 86400 // expires in 24 hours
-        });
-        res.status(200).send({auth: true, token: token, user: user});
-    });
-});
-
 
 app.use(router)
 
