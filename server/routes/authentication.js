@@ -14,7 +14,7 @@ function createUserAndSendToken(res, name, email, pass, isAdmin = false) {
             return res.status(500).send('There was a problem registering the user.')
         }
         const token = jwt.sign({id: user._id}, config.secret, {
-            expiresIn: 86400, // expires in 24 hours
+            expiresIn: 1000 , // expires in 24 hours 86400
         })
         res.status(200).send({auth: true, token, user})
     })
@@ -42,7 +42,7 @@ module.exports = function (router) {
                 return res.status(401).send({auth: false, token: null})
             }
             const token = jwt.sign({id: user.id}, config.secret, {
-                expiresIn: 86400, // expires in 24 hours
+                expiresIn: 1000 , // expires in 24 hours 86400
             })
             res.status(200).send({auth: true, token: token, user: user})
         })
