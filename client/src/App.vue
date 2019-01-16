@@ -14,6 +14,18 @@
                 <li>
                     <router-link to="/newsletter">Newsletter</router-link>
                 </li>
+                <li>
+                    <router-link to="/register">Register</router-link>
+                </li>
+                <li>
+                    <router-link to="/login">Login</router-link>
+                </li>
+                <li>
+                    <router-link to="/dashboard">Dashboard</router-link>
+                </li>
+                <li>
+                    <router-link to="/admin">Admin</router-link>
+                </li>
             </ul>
         </div>
         <div id="content">

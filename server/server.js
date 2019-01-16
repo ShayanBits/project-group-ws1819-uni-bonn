@@ -1,14 +1,24 @@
 const express = require('express')
+const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
+const multer = require('multer')
+const mime = require('mime')
+
 const app = express()
 const port = process.env.port || 3000
-const bodyParser = require('body-parser')
 
-const mongoose = require('mongoose')
 const mongoUrl = 'mongodb://127.0.0.1:27017'
 const mongoDbName = 'gallery'
 
-const multer = require('multer')
-const mime = require('mime')
+const allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', '*');
+    res.header('Access-Control-Allow-Headers', '*');
+    next();
+}
+
+app.use(allowCrossDomain)
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'public/img/')
@@ -32,6 +42,11 @@ const Tag = require('./models/tag')
 
 app.use(express.static(__dirname + '/public'))
 app.use(bodyParser.json())
+
+const router = express.Router()
+router.use(bodyParser.urlencoded({ extended: false }))
+router.use(bodyParser.json())
+require('./routes/authentication')(router)
 
 app.post('/api/getImageJson', (req, res) => {
     Image.find((err, images) => {
@@ -75,6 +90,8 @@ app.post('/api/images/upload', upload.single('image'), (req, res, next) => {
         res.send('wrong filetype')
     }
 })
+
+app.use(router)
 
 app.listen(port, '0.0.0.0')
 
