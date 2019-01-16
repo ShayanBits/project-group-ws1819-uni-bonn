@@ -12,6 +12,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "css-loader": "^1.0.1",
     "stylus-loader": "^3.0.2",
     "vue": "^2.5.17",
