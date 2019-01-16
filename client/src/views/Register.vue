@@ -14,10 +14,10 @@
                         <v-text-field prepend-icon="lock" name="Password" label="Password" type="password"
                                       v-model="password" required></v-text-field>
                         <v-text-field prepend-icon="lock" name="Password-confirmation" label="Password-confirmation"
-                                      type="password" v-model="password_confirmation" required></v-text-field>
+                                      type="password" v-model="passwordConfirm" required></v-text-field>
                         <v-checkbox
                                 label="Are you Admin?"
-                                v-model="is_admin"
+                                v-model="isAdmin"
                         ></v-checkbox>
                         <v-card-actions>
                             <v-btn primary large block @click="handleSubmit">Register</v-btn>
@@ -30,53 +30,45 @@
 </template>
 
 <script>
+    import postJson from '../mixins/postJson'
+
     export default {
-        props: ["nextUrl"],
+        props: ['nextUrl'],
         data() {
             return {
-                name: "",
-                email: "",
-                password: "",
-                password_confirmation: "",
-                is_admin: false
+                name: '',
+                email: '',
+                password: '',
+                passwordConfirm: '',
+                isAdmin: false,
             }
         },
         methods: {
             handleSubmit(e) {
                 e.preventDefault()
-
-                if (this.password === this.password_confirmation && this.password.length > 0) {
-                    let url = "http://localhost:3000/register"
-                    if (this.is_admin != null || this.is_admin == 1) url = "http://localhost:3000/register-admin"
-                    this.$http.post(url, {
+                const formValid = this.password === this.passwordConfirm && this.password.length > 0
+                if (formValid) {
+                    postJson('/register', {
                         name: this.name,
                         email: this.email,
                         password: this.password,
-                        is_admin: this.is_admin
+                        isAdmin: this.isAdmin,
+                    }, false).then(({auth, user}) => {
+                        if (auth) {
+                            this.$store.commit('receiveUser', user)
+                            let nextRoute = this.$route.params.nextUrl || user.isAdmin ? 'admin' : 'dashboard'
+                            this.$router.push(nextRoute)
+                        }
+                    }).catch(error => {
+                        console.error(error)
                     })
-                        .then(response => {
-                            localStorage.setItem('user', JSON.stringify(response.data.user))
-                            localStorage.setItem('jwt', response.data.token)
-
-                            if (localStorage.getItem('jwt') != null) {
-                                this.$emit('loggedIn')
-                                if (this.$route.params.nextUrl != null) {
-                                    this.$router.push(this.$route.params.nextUrl)
-                                } else {
-                                    this.$router.push('/')
-                                }
-                            }
-                        })
-                        .catch(error => {
-                            console.error(error);
-                        });
                 } else {
-                    this.password = ""
-                    this.passwordConfirm = ""
+                    this.password = ''
+                    this.passwordConfirm = ''
 
-                    return alert("Passwords do not match")
+                    return alert('Passwords do not match')
                 }
-            }
-        }
+            },
+        },
     }
 </script>

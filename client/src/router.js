@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home'
+import postJson from './mixins/postJson'
 
 Vue.use(Router)
 
@@ -75,7 +76,7 @@ const router = new Router({
             component: () => import('./views/Admin.vue'),
             meta: {
                 requiresAuth: true,
-                is_admin: true,
+                requiresAdmin: true,
             },
         },
     ],
@@ -83,32 +84,25 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
-        if (localStorage.getItem('jwt') == null) {
-            next({
-                path: '/login',
-                params: {nextUrl: to.fullPath},
-            })
-        } else {
-            const user = JSON.parse(localStorage.getItem('user'))
-            if (to.matched.some(record => record.meta.is_admin)) {
-                if (user.isAdmin) {
-                    next()
-                } else {
-                    next({name: 'userboard'})
-                }
-            } else {
-                next()
+        postJson('/authenticate', {}, false).then(({user}) => {
+            const requestingAdmin = to.matched.some(record => record.meta.requiresAdmin)
+            if (user) {
+                router.app.$store.commit('receiveUser', user)
             }
-        }
-    } else if (to.matched.some(record => record.meta.guest)) {
-        if (localStorage.getItem('jwt') == null) {
-            next()
-        } else {
-            next({name: 'userboard'})
-        }
+            if (user && (!requestingAdmin || (requestingAdmin && user.isAdmin))) {
+                next()
+            } else if (user && requestingAdmin) {
+                router.app.$root.$emit('requireAdmin')
+            } else {
+                next({
+                    path: '/login',
+                    params: {nextUrl: to.fullPath},
+                })
+            }
+        })
     } else {
         next()
     }
 })
 
-export default router;
+export default router

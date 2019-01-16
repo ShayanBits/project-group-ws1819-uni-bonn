@@ -7,8 +7,6 @@ import Axios from 'axios'
 import 'vuetify/dist/vuetify.min.css'
  // import 'vuetify/src/stylus/main.styl'
 
-Vue.prototype.$http = Axios
-
 Vue.use(Vuetify)
 
 Vue.config.productionTip = false
