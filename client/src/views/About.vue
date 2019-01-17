@@ -1,6 +1,6 @@
 <template>
     <div class="about">
-        <h1>Home</h1>
+        <h1>About</h1>
         <div class="index">
             <p id="p1-test">Welcome stranger to my humble website! My name is Otto and, as you may have guessed, I'm a photographer.</p>
             <p>I display my fairly infantile skills in my <router-link to="/gallery">gallery</router-link> . You can also find some
