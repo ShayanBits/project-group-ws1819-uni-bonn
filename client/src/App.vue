@@ -6,7 +6,7 @@
         </v-snackbar>
         <div id="nav">
             <div class="router-links">
-                <router-link to="/about">Home</router-link>
+                <router-link to="/about">About</router-link>
                 <router-link to="/gallery">Gallery</router-link>
                 <router-link to="/blog">Blog</router-link>
                 <router-link to="/newsletter">Newsletter</router-link>
