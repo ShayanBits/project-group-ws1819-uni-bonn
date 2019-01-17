@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const multer = require('multer')
 const mime = require('mime')
+const cookieParser = require('cookie-parser')
 
 const app = express()
 const port = process.env.port || 3000
@@ -17,6 +18,7 @@ const allowCrossDomain = function(req, res, next) {
     next();
 }
 
+app.use(cookieParser())
 app.use(allowCrossDomain)
 
 const storage = multer.diskStorage({
