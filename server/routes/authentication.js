@@ -18,9 +18,11 @@ function createToken({_id: id, name, email, isAdmin}, expiresIn = config.expire)
     return {user, token}
 }
 
-function sendToken(res, {user, token}) {
+function sendToken(res, {user, token}, onlyCookie = false) {
     res.cookie('jwt', token)
-    res.status(200).send({auth: true, user})
+    if (!onlyCookie) {
+        res.status(200).send({auth: true, user})
+    }
 }
 
 function createUserAndSendToken(res, name, email, pass, isAdmin = false) {
@@ -60,11 +62,17 @@ module.exports = function (router) {
 
     router.post('/authenticate', function (req, res) {
         const token = req.cookies.jwt
-        jwt.verify(token, config.secret, function (err, user) {
+        jwt.verify(token, config.secret, function (err, decoded) {
             if (err) {
                 res.send(err)
             }
-            res.send(user)
+            let expDate = decoded.exp
+            let createdExp = decoded.iat
+            if(expDate-createdExp > 2*(expDate - Date.now())) {
+                const newUser = Object.assign({}, decoded.user, {_id: decoded.user.id})
+                sendToken(res, createToken(newUser), true)
+            }
+            res.send(decoded)
         })
     })
 }

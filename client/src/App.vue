@@ -39,7 +39,7 @@
     }
 
     #nav {
-        display: flex;
+        display: block;
         background-color: #2c3e50;
     }
 
