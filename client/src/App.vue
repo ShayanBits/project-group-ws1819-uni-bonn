@@ -60,6 +60,10 @@
         color: #42b983;
     }
 
+    #content{
+        flex-grow: 1;
+    }
+
     .router-links {
         overflow: hidden;
         display: flex;

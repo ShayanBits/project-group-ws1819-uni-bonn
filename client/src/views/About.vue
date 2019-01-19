@@ -20,10 +20,6 @@
 
 <style scoped>
 
-    .about{
-        flex-grow: 1;
-    }
-
     .index{
         text-align: justify;
     }

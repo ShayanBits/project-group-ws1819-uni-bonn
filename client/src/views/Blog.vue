@@ -5,7 +5,5 @@
 </template>
 
 <style scoped>
-    .blog {
-        height: 100vh;
-    }
+
 </style>
