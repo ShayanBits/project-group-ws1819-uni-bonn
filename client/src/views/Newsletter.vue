@@ -5,7 +5,5 @@
 </template>
 
 <style scoped>
-    .newsletter {
-        height: 100vh;
-    }
+
 </style>
