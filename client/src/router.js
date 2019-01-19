@@ -32,7 +32,7 @@ const router = new Router({
                 },
                 {
                     path: ':id',
-                    component: () => import('./views/SingleImage.vue'),
+                    component: () => import('./views/FullscreenImageView.vue'),
                 },
             ],
         },
