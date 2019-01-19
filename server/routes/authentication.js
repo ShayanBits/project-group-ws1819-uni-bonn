@@ -19,7 +19,7 @@ function createToken({_id: id, name, email, isAdmin}, expiresIn = config.expire)
 }
 
 function sendToken(res, {user, token}, onlyCookie = false) {
-    res.cookie('jwt', token)
+    res.cookie('jwt', token,{httpOnly: true})
     if (!onlyCookie) {
         res.status(200).send({auth: true, user})
     }
