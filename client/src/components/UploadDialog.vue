@@ -150,7 +150,10 @@
                 fetch('/api/images/upload', {
                     method: 'POST',
                     body: formData,
-                }).then(this.emptyFields())
+                }).then(() => {
+                    this.$socket.emit('newImages');
+                    this.emptyFields()
+                })
 
             },
         },

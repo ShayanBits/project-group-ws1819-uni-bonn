@@ -99,7 +99,6 @@
     import Footer from "./components/Footer"
     import WebFontLoader from 'webfontloader'
 
-
     export default {
         // Loading fonts asynchronously
         mounted() {
