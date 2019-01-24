@@ -18,6 +18,8 @@ Vue.filter('titleCase', (str) => {
     return item.charAt(0).toUpperCase() + item.substring(1)
   }).join(' ')
 })
+
+// TODO: declare as global variable / mixin
 Vue.prototype.$socket = io.connect(window.location.protocol + '//' + window.location.hostname + ':3000')
 
 new Vue({
