@@ -18,7 +18,7 @@ Vue.filter('titleCase', (str) => {
     return item.charAt(0).toUpperCase() + item.substring(1)
   }).join(' ')
 })
-Vue.prototype.$socket = io.connect('http://localhost:3000')
+Vue.prototype.$socket = io.connect(window.location.protocol + '//' + window.location.hostname + ':3000')
 
 new Vue({
   router,
