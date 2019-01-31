@@ -4,6 +4,8 @@ const mongoose = require('mongoose')
 const multer = require('multer')
 const mime = require('mime')
 const cookieParser = require('cookie-parser')
+const jwt = require('jsonwebtoken')
+const config = require('./config')
 
 const app = express()
 const port = process.env.port || 3000
@@ -11,11 +13,11 @@ const port = process.env.port || 3000
 const mongoUrl = 'mongodb://127.0.0.1:27017'
 const mongoDbName = 'gallery'
 
-const allowCrossDomain = function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', '*');
-    res.header('Access-Control-Allow-Headers', '*');
-    next();
+const allowCrossDomain = function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Access-Control-Allow-Methods', '*')
+    res.header('Access-Control-Allow-Headers', '*')
+    next()
 }
 
 app.use(cookieParser())
@@ -46,14 +48,17 @@ app.use(express.static(__dirname + '/public'))
 app.use(bodyParser.json())
 
 const router = express.Router()
-router.use(bodyParser.urlencoded({ extended: false }))
+router.use(bodyParser.urlencoded({extended: false}))
 router.use(bodyParser.json())
 require('./routes/authentication')(router)
 
 app.post('/api/getImageJson', (req, res) => {
-    Image.find((err, images) => {
-        res.send({images})
-    })
+    Image
+        .find()
+        .populate('user', 'name')
+        .exec((err, images) => {
+            res.send({images})
+        });
 })
 
 app.post('/api/getTag', (req, res) => {
@@ -70,22 +75,25 @@ app.post('/api/getTags', (req, res) => {
 })
 
 app.post('/api/images/upload', upload.single('image'), (req, res, next) => {
-    if (req.file) {
-        const tags = JSON.parse(req.body.tags)
-        Image.create({
-            label: req.body.label,
-            path: req.file.filename,
-            tags: tags,
-        }, (err, i) => {
-            res.send({success: true, message: 'image saved', image: i})
-        })
-        tags.forEach(tag => {
-            Tag.find({name: tag}, (err, foundTags) => {
-                if (foundTags.length === 0) {
-                    Tag.create({name: tag, images: 1})
-                } else {
-                    Tag.findOneAndUpdate({_id: foundTags[0].id}, {$inc: {'images': 1}}).exec()
-                }
+    if (req.file && req.cookies.jwt) {
+        jwt.verify(req.cookies.jwt, config.secret, (err, decoded) => {
+            const tags = JSON.parse(req.body.tags)
+            Image.create({
+                user: decoded.user.id,
+                label: req.body.label,
+                path: req.file.filename,
+                tags: tags,
+            }, (err, i) => {
+                res.send({success: true, message: 'image saved', image: i})
+            })
+            tags.forEach(tag => {
+                Tag.find({name: tag}, (err, foundTags) => {
+                    if (foundTags.length === 0) {
+                        Tag.create({name: tag, images: 1})
+                    } else {
+                        Tag.findOneAndUpdate({_id: foundTags[0].id}, {$inc: {'images': 1}}).exec()
+                    }
+                })
             })
         })
     } else {

@@ -80,7 +80,7 @@
                 imageUrl: '',
                 imageFile: '',
                 label: '',
-                tags:'',
+                tags:[],
                 search: null
             }
         },
@@ -95,7 +95,7 @@
                 this.imageName =''
                 this.imageFile = ''
                 this.imageUrl = ''
-                this.tags = ''
+                this.tags = []
             },
             edit (index, item) {
                 if (!this.editing) {
@@ -142,7 +142,6 @@
                 }
             },
             upload() {
-                console.log(JSON.stringify(this.tags))
                 const formData = new FormData()
                 formData.append('image', this.imageFile, 'image.jpg')
                 formData.append('label', this.label)
