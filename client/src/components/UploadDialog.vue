@@ -144,7 +144,6 @@
                 } else this.emptyFields()
             },
             upload() {
-                console.log(JSON.stringify(this.tags))
                 const formData = new FormData()
                 formData.append('image', this.imageFile, 'image.jpg')
                 formData.append('label', this.label)
