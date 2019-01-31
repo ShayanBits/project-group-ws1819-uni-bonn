@@ -1,5 +1,6 @@
 <template>
     <div class="wrapper">
+        <DatePicker></DatePicker>
         <v-combobox
                 class="search-input"
                 v-model="searchTerms"
@@ -23,10 +24,11 @@
 
 <script>
     import GalleryImage from './GalleryImage'
+    import DatePicker from "./DatePicker";
 
     export default {
         name: 'GalleryWrapper',
-        components: {GalleryImage},
+        components: {DatePicker, GalleryImage},
         props: {
             type: String,
         },

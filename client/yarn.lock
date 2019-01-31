@@ -2784,6 +2784,11 @@ data-urls@^1.0.0:
     whatwg-mimetype "^2.2.0"
     whatwg-url "^7.0.0"
 
+date-fns@^1.29.0:
+  version "1.30.1"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.30.1.tgz#2e71bf0b119153dbb4cc4e88d9ea5acfb50dc05c"
+  integrity sha512-hBSVCvSmWC+QypYObzwGOd9wqdDpOt+0wl0KbU+R+uuZBS1jN8VsD1ss3irQDknRj5NvxiTF6oj/nDRnN/UQNw==
+
 date-now@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/date-now/-/date-now-0.1.4.tgz#eaf439fd4d4848ad74e5cc7dbef200672b9e345b"
@@ -8786,7 +8791,15 @@ vue@^2.5.17:
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.22.tgz#3bf88041af08b8539c37b268b70ca79245e9cc30"
   integrity sha512-pxY3ZHlXNJMFQbkjEgGVMaMMkSV1ONpz+4qB55kZuJzyJOhn6MSy/YZdzhdnumegNzVTL/Dn3Pp4UrVBYt1j/g==
 
-vuetify@^1.3.9:
+vuetify-daterange-picker@^2.6.2:
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/vuetify-daterange-picker/-/vuetify-daterange-picker-2.6.2.tgz#13446e00ad95582f03596b30f99dd5764131c9ce"
+  integrity sha512-F6fZP0Nv3+PFIBdikCqbecjlQlBEW9Db4q6DNW00kZ4vwGe5qZH407Z2c1Mcj9f1qEfyFcDZRuzy/hP3QxfTUg==
+  dependencies:
+    date-fns "^1.29.0"
+    vuetify "^1.0.4"
+
+vuetify@^1.0.4, vuetify@^1.3.9:
   version "1.4.4"
   resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-1.4.4.tgz#0a08d98e685a875e3d7fd035235932d9abf3fd5b"
   integrity sha512-i0fNciTrzP+U6NinB2kmNMC5vWXtrTy5QcVFLOxv4dhhqTiMTyHj7rV1B2lwBTZYoDhimmSAYRfqHeKdCMx+Gg==
