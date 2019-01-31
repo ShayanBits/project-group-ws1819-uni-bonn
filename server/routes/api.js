@@ -80,7 +80,7 @@ router.post('/images/upload', upload.single('image'), (req, res) => {
     if (req.file && req.haveAccess) {
         const tags = JSON.parse(req.body.tags)
         Image.create({
-            user: req.user,
+            user: req.user.id,
             label: req.body.label,
             path: req.file.filename,
             tags: tags,
