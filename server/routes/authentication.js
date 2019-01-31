@@ -19,7 +19,7 @@ function createToken({_id: id, name, email, isAdmin}, expiresIn = config.expire)
 }
 
 function sendToken(res, {user, token}, onlyCookie = false) {
-    res.cookie('jwt', token)
+    res.cookie('jwt', token,{httpOnly: true})
     if (!onlyCookie) {
         res.status(200).send({auth: true, user})
     }
@@ -51,6 +51,7 @@ module.exports = function (router) {
             if (!passwordIsValid) {
                 return res.status(401).send({auth: false})
             }
+            console.log("login log")
             sendToken(res, createToken(user))
         })
     })
@@ -67,8 +68,10 @@ module.exports = function (router) {
                 res.send(err)
             }
             let expDate = decoded.exp
-            let createdExp = decoded.iat
-            if(expDate-createdExp > 2*(expDate - Date.now())) {
+            let createdDate = decoded.iat
+            console.log('Remaining valid time (more than half of expiry time):' , expDate-(Date.now()/1000))
+            if(expDate-createdDate > 2*(expDate - (Date.now()/1000))) {
+                console.log('Remaining valid time (less than half of expiry time):' , expDate-(Date.now()/1000), 'Extending validation time')
                 const newUser = Object.assign({}, decoded.user, {_id: decoded.user.id})
                 sendToken(res, createToken(newUser), true)
             }

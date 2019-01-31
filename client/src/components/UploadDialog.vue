@@ -50,7 +50,8 @@
                                         <v-list-tile>
                                             <v-list-tile-content>
                                                 <v-list-tile-title>
-                                                    No results matching "<strong>{{ search }}</strong>". Press <kbd>enter</kbd> to create a new one
+                                                    No results matching "<strong>{{ search }}</strong>". Press <kbd>enter</kbd>
+                                                    to create a new one
                                                 </v-list-tile-title>
                                             </v-list-tile-content>
                                         </v-list-tile>
@@ -80,24 +81,24 @@
                 imageUrl: '',
                 imageFile: '',
                 label: '',
-                tags:[],
-                search: null
+                tags: [],
+                search: null,
             }
         },
-        computed:{
-            loadedTags(){
+        computed: {
+            loadedTags() {
                 return this.$store.getters.updateTagArray
-            }
+            },
         },
         methods: {
-            emptyFields(){
+            emptyFields() {
                 this.label = ''
-                this.imageName =''
+                this.imageName = ''
                 this.imageFile = ''
                 this.imageUrl = ''
                 this.tags = []
             },
-            edit (index, item) {
+            edit(index, item) {
                 if (!this.editing) {
                     this.editing = item
                     this.index = index
@@ -106,7 +107,7 @@
                     this.index = -1
                 }
             },
-            filter (item, queryText, itemText) {
+            filter(item, queryText, itemText) {
                 if (item.header) return false
                 const hasValue = val => val != null ? val : ''
                 const text = hasValue(itemText)
@@ -115,8 +116,8 @@
                     .toLowerCase()
                     .indexOf(query.toString().toLowerCase()) > -1
             },
-            callFetchTags(){
-              this.$store.dispatch('fetchTags')
+            callFetchTags() {
+                this.$store.dispatch('fetchTags')
             },
             pickFile() {
                 this.$refs.image.click()
@@ -149,7 +150,10 @@
                 fetch('/api/images/upload', {
                     method: 'POST',
                     body: formData,
-                }).then(this.emptyFields())
+                }).then(() => {
+                    this.$socket.emit('newImages')
+                    this.emptyFields()
+                })
 
             },
         },
