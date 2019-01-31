@@ -34,6 +34,9 @@
                                 <v-text-field label="Picture name*" required v-model="label"/>
                             </v-flex>
                             <v-flex xs12>
+                                <v-text-field label="Author*" required v-model="author"/>
+                            </v-flex>
+                            <v-flex xs12>
                                 <v-combobox
                                         :filter="filter"
                                         v-model="tags"
@@ -81,6 +84,7 @@
                 imageUrl: '',
                 imageFile: '',
                 label: '',
+                author: '',
                 tags: [],
                 search: null,
             }
@@ -97,6 +101,7 @@
                 this.imageFile = ''
                 this.imageUrl = ''
                 this.tags = []
+                this.author = ''
             },
             edit(index, item) {
                 if (!this.editing) {
@@ -136,17 +141,14 @@
                         this.imageUrl = fr.result
                         this.imageFile = files[0] // this is an image file that can be sent to server...
                     })
-                } else {
-                    this.imageName = ''
-                    this.imageFile = ''
-                    this.imageUrl = ''
-                }
+                } else this.emptyFields()
             },
             upload() {
                 console.log(JSON.stringify(this.tags))
                 const formData = new FormData()
                 formData.append('image', this.imageFile, 'image.jpg')
                 formData.append('label', this.label)
+                formData.append('author', this.author)
                 formData.append('tags', JSON.stringify(this.tags))
                 fetch('/api/images/upload', {
                     method: 'POST',

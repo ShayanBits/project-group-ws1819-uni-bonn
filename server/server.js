@@ -81,6 +81,7 @@ app.post('/api/images/upload', upload.single('image'), (req, res, next) => {
         const tags = JSON.parse(req.body.tags)
         Image.create({
             label: req.body.label,
+            author: req.body.author,
             path: req.file.filename,
             tags: tags,
         }, (err, i) => {

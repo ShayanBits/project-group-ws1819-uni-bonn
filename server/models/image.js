@@ -3,6 +3,7 @@ const Schema = mongoose.Schema
 
 const imageSchema = new Schema({
     label: String,
+    author: String,
     path: String,
     tags: [String],
 }, {collection: 'images_metadata'})
