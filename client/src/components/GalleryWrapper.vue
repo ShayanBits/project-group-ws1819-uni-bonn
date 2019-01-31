@@ -1,23 +1,23 @@
 <template>
-    <div v-bind:class="type">
-        <div>
-            <v-combobox
-                    full-width
-                    v-model="tags"
-                    hide-selected
-                    label="Tags"
-                    hint="You can assign multiple tags to your image. Press enter after entering one!"
-                    multiple
-                    :items="loadedTags"
-                    small-chips
+    <div class="wrapper">
+        <v-combobox
+                class="search-input"
+                v-model="searchTerms"
+                hide-selected
+                label="Search"
+                hint="Press enter to add a search term"
+                multiple
+                :items="loadedTags"
+                small-chips
+        />
+        <div v-bind:class="type">
+            <GalleryImage
+                    v-for="image in images"
+                    v-bind:id="image._id"
+                    v-bind:key="image._id"
+                    v-bind:withTitle="withTitle"
             />
         </div>
-        <GalleryImage
-                v-for="image in images"
-                v-bind:id="image._id"
-                v-bind:key="image._id"
-                v-bind:withTitle="withTitle"
-        />
     </div>
 </template>
 
@@ -32,7 +32,7 @@
         },
         data() {
             return {
-                tags: [],
+                searchTerms: [],
             }
         },
         computed: {
@@ -44,19 +44,49 @@
             },
             images() {
                 const images = Object.values(this.$store.state.gallery.images)
-                if (this.tags.length === 0) {
+                if (this.searchTerms.length === 0) {
                     return images
                 }
                 return images.filter(image => {
-                    console.log('imageTags', image.tags)
-                    return image.tags.some(tag => this.tags.includes(tag))
+                    return showImage(image, this.searchTerms)
                 })
             },
         },
     }
+
+    function showImage(image, searchTerms) {
+        for (const term of searchTerms) {
+            if (term === image.label) {
+                continue
+            }
+            if (image.tags.includes(term)) {
+                continue
+            }
+            if (term === image.author) {
+                continue
+            }
+            // if (['>', '<'].includes.term.substr(0, 1)) {
+                // const uploadTime = moment(image.uploadTime);
+                // const imageDate = uploadTime.format('YYYY-MM-DD');
+                // const date = term.substr(1, term.length - 1)
+            // }
+            return false
+        }
+        return true
+    }
 </script>
 
 <style scoped>
+    .wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .search-input {
+        width: 70%;
+    }
+
     .default {
         display: flex;
         flex-flow: row wrap;
