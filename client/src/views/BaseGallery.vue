@@ -13,18 +13,8 @@
         components: {uploadOverlay},
         name: "BaseGallery",
         beforeCreate() {
-            postJson('/getImageJson', {}).then(json => {
-                this.$store.commit('receiveImages', {images: this.reduceToObject(json.images)})
-            })
+            // this.$store.dispatch('fetchImages')
         },
-        methods: {
-            reduceToObject(array) {
-                return array.reduce(function (map, obj) {
-                    map[obj._id] = obj
-                    return map;
-                }, {})
-            }
-        }
     }
 </script>
 

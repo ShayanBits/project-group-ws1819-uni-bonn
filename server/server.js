@@ -8,6 +8,13 @@ const cookieParser = require('cookie-parser')
 const app = express()
 const port = process.env.port || 3000
 
+const server = require('http').createServer(app)
+const io = require('socket.io').listen(server)
+
+io.on('connection', socket => {
+    console.log('connected')
+})
+
 const mongoUrl = 'mongodb://127.0.0.1:27017'
 const mongoDbName = 'gallery'
 
@@ -77,6 +84,7 @@ app.post('/api/images/upload', upload.single('image'), (req, res, next) => {
             path: req.file.filename,
             tags: tags,
         }, (err, i) => {
+            io.emit('newImages')
             res.send({success: true, message: 'image saved', image: i})
         })
         tags.forEach(tag => {
@@ -95,6 +103,6 @@ app.post('/api/images/upload', upload.single('image'), (req, res, next) => {
 
 app.use(router)
 
-app.listen(port, '0.0.0.0')
+server.listen(port, '0.0.0.0')
 
 console.log('server started ' + port)
