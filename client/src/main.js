@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import Vuetify from 'vuetify'
 import Axios from 'axios'
+import io from 'socket.io-client'
 import 'vuetify/dist/vuetify.min.css'
  // import 'vuetify/src/stylus/main.styl'
 
@@ -15,6 +16,9 @@ Vue.filter('titleCase', (str) => {
     return item.charAt(0).toUpperCase() + item.substring(1)
   }).join(' ')
 })
+
+// TODO: declare as global variable / mixin
+Vue.prototype.$socket = io.connect(window.location.protocol + '//' + window.location.hostname + ':3000')
 
 new Vue({
   router,

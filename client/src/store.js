@@ -5,6 +5,13 @@ import postJson from './mixins/postJson'
 
 Vue.use(Vuex)
 
+function reduceToObject(array) {
+    return array.reduce(function (map, obj) {
+        map[obj._id] = obj
+        return map;
+    }, {})
+}
+
 export default new Vuex.Store({
     state: {
         gallery: {
@@ -28,6 +35,11 @@ export default new Vuex.Store({
         },
     },
     actions: {
+        fetchImages(context) {
+            postJson('/getImageJson', {}).then(json => {
+                context.commit('receiveImages', {images: reduceToObject(json.images)})
+            })
+        },
         fetchTags(context) {
             postJson('/getTags', {}).then(json => {
                 context.commit('receiveTags', json)
@@ -57,6 +69,6 @@ export default new Vuex.Store({
         },
         user: state => {
             return state.user
-        }
+        },
     },
 })
