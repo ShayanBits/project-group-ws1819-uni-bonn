@@ -18,6 +18,7 @@ export default new Vuex.Store({
             images: {},
         },
         savedTags: [],
+        user: null,
     },
     mutations: {
         receiveImages(state, payload) {
@@ -25,6 +26,12 @@ export default new Vuex.Store({
         },
         receiveTags(state, payload) {
             state.savedTags = payload.map(tag => tag.name)
+        },
+        receiveUser(state, user) {
+            state.user = user
+        },
+        clearUser(state) {
+            state.user = null
         },
     },
     actions: {
@@ -59,6 +66,9 @@ export default new Vuex.Store({
                 newIndex = currentIndex === 0 ? maxIndex : currentIndex - 1
             }
             return images[newIndex]
+        },
+        user: state => {
+            return state.user
         },
     },
 })

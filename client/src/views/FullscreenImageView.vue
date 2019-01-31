@@ -6,7 +6,7 @@
 </template>
 
 <script>
-  import SingleImage from "../components/SingleImage"
+  import SingleImage from "../components/FullscreenImageComponent"
   import GalleryWrapper from '../components/GalleryWrapper'
 
   export default {

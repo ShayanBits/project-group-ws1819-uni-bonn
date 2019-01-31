@@ -437,6 +437,14 @@ content-type@~1.0.4:
   resolved "https://registry.yarnpkg.com/content-type/-/content-type-1.0.4.tgz#e138cc75e040c727b1966fe5e5f8c9aee256fe3b"
   integrity sha512-hIP3EEPs8tB9AT1L+NUqtwOAps4mk2Zob89MWXMHjHWg9milF/j4osnnQLXBCBFBk/tvIG/tUc9mOUJiPBhPXA==
 
+cookie-parser@^1.4.3:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/cookie-parser/-/cookie-parser-1.4.3.tgz#0fe31fa19d000b95f4aadf1f53fdc2b8a203baa5"
+  integrity sha1-D+MfoZ0AC5X0qt8fU/3CuKIDuqU=
+  dependencies:
+    cookie "0.3.1"
+    cookie-signature "1.0.6"
+
 cookie-signature@1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/cookie-signature/-/cookie-signature-1.0.6.tgz#e303a882b342cc3ee8ca513a79999734dab3ae2c"
@@ -1220,21 +1228,21 @@ jsonwebtoken@^8.4.0:
     lodash.once "^4.0.0"
     ms "^2.1.1"
 
-jwa@^1.1.5:
-  version "1.1.6"
-  resolved "https://registry.yarnpkg.com/jwa/-/jwa-1.1.6.tgz#87240e76c9808dbde18783cf2264ef4929ee50e6"
-  integrity sha512-tBO/cf++BUsJkYql/kBbJroKOgHWEigTKBAjjBEmrMGYd1QMBC74Hr4Wo2zCZw6ZrVhlJPvoMrkcOnlWR/DJfw==
+jwa@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/jwa/-/jwa-1.2.0.tgz#606da70c1c6d425cad329c77c99f2df2a981489a"
+  integrity sha512-Grku9ZST5NNQ3hqNUodSkDfEBqAmGA1R8yiyPHOnLzEKI0GaCQC/XhFmsheXYuXzFQJdILbh+lYBiliqG5R/Vg==
   dependencies:
     buffer-equal-constant-time "1.0.1"
     ecdsa-sig-formatter "1.0.10"
     safe-buffer "^5.0.1"
 
 jws@^3.1.5:
-  version "3.1.5"
-  resolved "https://registry.yarnpkg.com/jws/-/jws-3.1.5.tgz#80d12d05b293d1e841e7cb8b4e69e561adcf834f"
-  integrity sha512-GsCSexFADNQUr8T5HPJvayTjvPIfoyJPtLQBwn5a4WZQchcrPMPMAWcC1AzJVRDKyD6ZPROPAxgv6rfHViO4uQ==
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/jws/-/jws-3.2.1.tgz#d79d4216a62c9afa0a3d5e8b5356d75abdeb2be5"
+  integrity sha512-bGA2omSrFUkd72dhh05bIAN832znP4wOU3lfuXtRBuGTbsmNmDXMQg28f0Vsxaxgk4myF5YkKQpz6qeRpMgX9g==
   dependencies:
-    jwa "^1.1.5"
+    jwa "^1.2.0"
     safe-buffer "^5.0.1"
 
 kareem@2.3.0:
@@ -1502,9 +1510,9 @@ mongoose-legacy-pluralize@1.0.2:
   integrity sha512-Yo/7qQU4/EyIS8YDFSeenIvXxZN+ld7YdV9LqFVQJzTLye8unujAWPZ4NWKfFA+RNjh+wvTWKY9Z3E5XM6ZZiQ==
 
 mongoose@^5.3.14:
-  version "5.4.6"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.4.6.tgz#5b2830a4a0cd1caf1ed91501b25e6874389c4ba5"
-  integrity sha512-b5LgAWUsT04LbFfwuwUa5hWyuPKQI8m3V+idAMriqU26P7d32Wu5RmtEBJyy2A5VlHIDtPseAqhLmJ1fGWHBGA==
+  version "5.4.8"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.4.8.tgz#f56bc514ee51593ce31b4f794d1f26f97dce10e9"
+  integrity sha512-2wgBi1LBxL/pcG0nNP8zXBLRmWZFzg8pb2MH4JkMPIxP/HGtQQEP0DbG1Yzy+Igsp3M1+V/59uXW37O2Fg5mBQ==
   dependencies:
     async "2.6.1"
     bson "~1.1.0"
@@ -2524,9 +2532,9 @@ write-file-atomic@^2.0.0:
     signal-exit "^3.0.2"
 
 ws@~6.1.0:
-  version "6.1.2"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-6.1.2.tgz#3cc7462e98792f0ac679424148903ded3b9c3ad8"
-  integrity sha512-rfUqzvz0WxmSXtJpPMX2EeASXabOrSMk1ruMOV3JBTBjo4ac2lDjGGsbQSyxj8Odhw5fBib8ZKEjDNvgouNKYw==
+  version "6.1.3"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-6.1.3.tgz#d2d2e5f0e3c700ef2de89080ebc0ac6e1bf3a72d"
+  integrity sha512-tbSxiT+qJI223AP4iLfQbkbxkwdFcneYinM2+x46Gx2wgvbaOMO36czfdfVUBRTHvzAMRhDd98sA5d/BuWbQdg==
   dependencies:
     async-limiter "~1.0.0"
 
