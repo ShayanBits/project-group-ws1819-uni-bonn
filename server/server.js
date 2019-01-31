@@ -18,11 +18,11 @@ io.on('connection', socket => {
 const mongoUrl = 'mongodb://127.0.0.1:27017'
 const mongoDbName = 'gallery'
 
-const allowCrossDomain = function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', '*');
-    res.header('Access-Control-Allow-Headers', '*');
-    next();
+const allowCrossDomain = function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Access-Control-Allow-Methods', '*')
+    res.header('Access-Control-Allow-Headers', '*')
+    next()
 }
 
 app.use(cookieParser())
@@ -35,7 +35,7 @@ app.use(express.static(__dirname + '/public'))
 app.use(bodyParser.json())
 
 const router = express.Router()
-router.use(bodyParser.urlencoded({ extended: false }))
+router.use(bodyParser.urlencoded({extended: false}))
 router.use(bodyParser.json())
 require('./routes/authentication')(router)
 app.use('/api',api)

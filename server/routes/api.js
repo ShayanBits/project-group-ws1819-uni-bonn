@@ -32,7 +32,7 @@ const upload = multer({storage})
 const checkAccess = function (req,res,next) {
     req.haveAccess = false
     const token = req.cookies.jwt
-    if (token != undefined) {
+    if (token !== undefined) {
         jwt.verify(token, config.secret, function (err, decoded) {
             if (err) {
                 console.log('JWT is not valid')
@@ -43,6 +43,7 @@ const checkAccess = function (req,res,next) {
                 console.log('Remaining valid time:', expDate - (Date.now() / 1000), ' seconds')
                 req.responseText = 'JWT is valid'
                 req.haveAccess = true
+                req.user = decoded.user
             }
         })
     }
@@ -54,9 +55,12 @@ const checkAccess = function (req,res,next) {
 router.use('/images/upload', checkAccess )
 
 router.post('/getImageJson', (req, res) => {
-    Image.find((err, images) => {
-        res.send({images})
-    })
+    Image
+        .find()
+        .populate('user', 'name')
+        .exec((err, images) => {
+            res.send({images})
+        });
 })
 
 
@@ -72,11 +76,11 @@ router.post('/getTags', (req, res) => {
         res.send(tags)
     })
 })
-
 router.post('/images/upload', upload.single('image'), (req, res) => {
     if (req.file && req.haveAccess) {
         const tags = JSON.parse(req.body.tags)
         Image.create({
+            user: req.user.id,
             label: req.body.label,
             path: req.file.filename,
             tags: tags,
