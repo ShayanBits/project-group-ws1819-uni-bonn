@@ -1,9 +1,14 @@
 <template>
+  <figure>
   <img
     v-bind:src="fullPath"
     v-bind:alt="label"
     @click="onClick"
   />
+    <figcaption>
+      {{label}}
+    </figcaption>
+  </figure>
 </template>
 
 <script>
@@ -29,5 +34,16 @@
 <style scoped>
   img {
     max-width: 100%;
+    max-height: 500px;
+   }
+  figure{
+    border-color: #42b983;
+    border-style: solid;
+    border-width: 3px;
+    background-color: #2c3e50;
+  }
+  figcaption{
+    color: #42b983;
+    font-weight: bold;
   }
 </style>
