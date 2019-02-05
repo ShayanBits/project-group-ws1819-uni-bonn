@@ -1,7 +1,7 @@
 <template>
     <v-layout row justify-center>
         <v-dialog v-model="dialog" persistent max-width="600px">
-            <v-btn slot="activator" fab dark color="indigo">
+            <v-btn slot="activator" fab dark color=#2c3e50 >
                 <v-icon dark @click='callFetchTags'>add</v-icon>
             </v-btn>
             <v-card>
