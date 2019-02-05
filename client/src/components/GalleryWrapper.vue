@@ -1,16 +1,19 @@
 <template>
     <div class="wrapper">
-        <DatePicker></DatePicker>
-        <v-combobox
-                class="search-input"
-                v-model="searchTerms"
-                hide-selected
-                label="Search"
-                hint="Press enter to add a search term"
-                multiple
-                :items="loadedTags"
-                small-chips
-        />
+        <div class="filter">
+            <v-combobox
+                    style="color: #2c3e50"
+                    class="search-input"
+                    v-model="searchTerms"
+                    hide-selected
+                    label="Search"
+                    hint="Press enter to add a search term"
+                    multiple
+                    :items="loadedTags"
+                    small-chips
+            />
+            <DatePicker></DatePicker>
+        </div>
         <div v-bind:class="type">
             <GalleryImage
                     v-for="image in images"
@@ -68,9 +71,9 @@
                 continue
             }
             // if (['>', '<'].includes.term.substr(0, 1)) {
-                // const uploadTime = moment(image.uploadTime);
-                // const imageDate = uploadTime.format('YYYY-MM-DD');
-                // const date = term.substr(1, term.length - 1)
+            // const uploadTime = moment(image.uploadTime);
+            // const imageDate = uploadTime.format('YYYY-MM-DD');
+            // const date = term.substr(1, term.length - 1)
             // }
             return false
         }
@@ -86,7 +89,7 @@
     }
 
     .search-input {
-        width: 70%;
+        flex-basis: 70%;
     }
 
     .default {
@@ -109,6 +112,13 @@
     .bottom > div {
         flex-basis: 25%;
     }
+
+    .filter{
+        width: 70%;
+        display: flex;
+        flex-direction: row;
+    }
+
 
     @media screen and (min-width: 834px) {
         .default > div {

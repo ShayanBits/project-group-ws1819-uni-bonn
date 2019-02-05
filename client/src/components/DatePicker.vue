@@ -1,7 +1,7 @@
 <template>
-    <v-dialog v-model="dialog" max-width="800px">
-        <v-btn slot="activator" fab dark color="indigo">
-            <v-icon medium dark>fa-calender</v-icon>
+    <v-dialog id="dialog" v-model="dialog" max-width="800px" style="display: flex; align-items: center">
+        <v-btn slot="activator" outline dark color=#2c3e50 @click="debugLog">
+            <v-icon>event</v-icon>
         </v-btn>
         <v-card>
             <v-card-text>
@@ -23,30 +23,53 @@
     import {DateRange} from 'vuetify-daterange-picker';
     import 'vuetify-daterange-picker/dist/vuetify-daterange-picker.css';
 
+    let today = new Date()
+    let day = today.getDate()
+    let month = today.getMonth()+1
+    let year = today.getFullYear()
+
+    let startDate = year.toString()+"-"+(month-1).toString()+"-"+day.toString()
+    let endDate = year.toString()+"-"+month.toString()+"-"+day.toString()
+
+    let veryFirstDay = '2018-11-01'
+    let dateFormat = 'DD/MM/YYYY'
+
     export default {
         components: {[DateRange.name]: DateRange},
         data() {
             return {
                 dateRangeOptions: {
-                    startDate: '2019-01-01',
-                    endDate: '2020-01-01',
-                    minDate: '2019-01-01',
-                    maxDate: '',
-                    format: 'DD/MM/YYYY'
+                    startDate: startDate,
+                    endDate: endDate,
+                    minDate: veryFirstDay,
+                    maxDate: endDate,
+                    format: dateFormat
                 },
                 dialog: false,
                 pickedStartDate: '',
                 pickedEndDate: '',
             }
         },
+        props:{
+
+
+        },
         methods: {
             onDateRangeChange() {
+            },
+            debugLog(){
+                console.log('year: ' + year)
+                console.log('month: ' + month)
+                console.log('day: ' + day)
+                console.log(startDate)
             }
         },
-        computed: {}
+        computed: {
+        }
     }
 </script>
 
 <style scoped>
+
 
 </style>
