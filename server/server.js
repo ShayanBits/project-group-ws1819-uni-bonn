@@ -28,6 +28,7 @@ const allowCrossDomain = function (req, res, next) {
 app.use(cookieParser())
 app.use(allowCrossDomain)
 
+mongoose.set('useCreateIndex', true);
 mongoose.connect(mongoUrl + '/' + mongoDbName, {useNewUrlParser: true})
 
 

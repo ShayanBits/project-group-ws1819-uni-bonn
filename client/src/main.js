@@ -6,9 +6,13 @@ import Vuetify from 'vuetify'
 import Axios from 'axios'
 import io from 'socket.io-client'
 import 'vuetify/dist/vuetify.min.css'
+import VDateRange from 'vuetify-daterange-picker'
+import 'vuetify-daterange-picker/dist/vuetify-daterange-picker.css'
  // import 'vuetify/src/stylus/main.styl'
 
 Vue.use(Vuetify)
+Vue.use(VDateRange);
+
 
 Vue.config.productionTip = false
 Vue.filter('titleCase', (str) => {

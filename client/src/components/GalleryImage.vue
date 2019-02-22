@@ -5,7 +5,7 @@
       v-bind:label="metadata.label"
       @img-click="singleImage"
     />
-    <!--TODO: add break line so that title goes on the nex line-->
+    <!--TODO: add break line so that title goes on the next line-->
     <!--<span v-if="withTitle">{{metadata.label | titleCase}}</span>-->
   </div>
 </template>
