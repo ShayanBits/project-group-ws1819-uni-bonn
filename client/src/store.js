@@ -47,7 +47,7 @@ export default new Vuex.Store({
         },
     },
     getters: {
-        updateTagArray: (state) => {
+        tags: (state) => {
             return state.savedTags
         },
         metadata: (state) => (id) => {

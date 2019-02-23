@@ -1,19 +1,7 @@
 <template>
     <div class="wrapper">
-        <div class="filter">
-            <v-combobox
-                style="color: #2c3e50"
-                class="search-input"
-                v-model="searchTerms"
-                hide-selected
-                label="Search"
-                hint="Press enter to add a search term"
-                multiple
-                :items="loadedTags"
-                small-chips
-            />
-            <DatePicker></DatePicker>
-        </div>
+        <Search v-bind.sync="filters"/>
+        <div>{{formatSelectedDateRange()}}</div>
         <div v-bind:class="type">
             <GalleryImage
                 v-for="image in images"
@@ -27,40 +15,60 @@
 
 <script>
     import GalleryImage from './GalleryImage'
-    import DatePicker from './DatePicker'
+    import Search from './Search'
+    import {format} from 'date-fns'
 
     export default {
         name: 'GalleryWrapper',
-        components: {DatePicker, GalleryImage},
+        components: {Search, GalleryImage},
         props: {
             type: String,
         },
         data() {
             return {
-                searchTerms: [],
+                filters: {
+                    terms: [],
+                    dateStart: '',
+                    dateEnd: '',
+                },
             }
         },
         computed: {
-            loadedTags() {
-                return this.$store.getters.updateTagArray
-            },
             withTitle() {
                 return this.type === 'default'
             },
             images() {
                 const images = Object.values(this.$store.state.gallery.images)
-                if (this.searchTerms.length === 0) {
-                    return images
-                }
                 return images.filter(image => {
-                    return showImage(image, this.searchTerms)
+                    return showImage(image, this.filters)
                 })
             },
         },
+        methods: {
+            formatSelectedDateRange() {
+                if (this.filters.dateStart !== '' && this.filters.dateEnd !== '') {
+                    return 'Selected Date Range: ' + format(new Date(this.filters.dateStart), 'DD/MM/YYYY') + ' - ' + format(new Date(this.filters.dateEnd), 'DD/MM/YYYY')
+                }
+            }
+        }
     }
 
-    function showImage(image, searchTerms) {
-        for (const term of searchTerms) {
+    function showImage(image, filters) {
+        const {terms, dateStart, dateEnd} = filters;
+
+        // filter based on date range picker
+        if (dateStart !== '' && dateEnd !== '') {
+            if (!image.createdAt) {
+                return false
+            }
+            const imageDateYMD = format(new Date(image.createdAt), 'YYYY-MM-DD')
+            if (imageDateYMD <= dateStart || dateEnd <= imageDateYMD) {
+                return false
+            }
+        }
+
+        // filter based on search terms
+        for (const term of terms) {
             if (term === image.label) {
                 continue
             }
@@ -79,7 +87,7 @@
 
             if (term.substr(0, 7) === 'before:') {
                 const date = new Date(term.substr(7, term.length - 7))
-                console.log(date);
+                console.log(date)
                 if (image.createdAt) {
                     const imageDate = new Date(image.createdAt)
                     if (imageDate <= date) {
@@ -97,11 +105,6 @@
                     }
                 }
             }
-            // if (['>', '<'].includes.term.substr(0, 1)) {
-            // const uploadTime = moment(image.uploadTime);
-            // const imageDate = uploadTime.format('YYYY-MM-DD');
-            // const date = term.substr(1, term.length - 1)
-            // }
             return false
         }
         return true
@@ -113,10 +116,6 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-    }
-
-    .search-input {
-        flex-basis: 70%;
     }
 
     .default {
