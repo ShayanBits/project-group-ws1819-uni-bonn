@@ -2,24 +2,24 @@
     <div class="wrapper">
         <div class="filter">
             <v-combobox
-                    style="color: #2c3e50"
-                    class="search-input"
-                    v-model="searchTerms"
-                    hide-selected
-                    label="Search"
-                    hint="Press enter to add a search term"
-                    multiple
-                    :items="loadedTags"
-                    small-chips
+                style="color: #2c3e50"
+                class="search-input"
+                v-model="searchTerms"
+                hide-selected
+                label="Search"
+                hint="Press enter to add a search term"
+                multiple
+                :items="loadedTags"
+                small-chips
             />
             <DatePicker></DatePicker>
         </div>
         <div v-bind:class="type">
             <GalleryImage
-                    v-for="image in images"
-                    v-bind:id="image._id"
-                    v-bind:key="image._id"
-                    v-bind:withTitle="withTitle"
+                v-for="image in images"
+                v-bind:id="image._id"
+                v-bind:key="image._id"
+                v-bind:withTitle="withTitle"
             />
         </div>
     </div>
@@ -27,7 +27,7 @@
 
 <script>
     import GalleryImage from './GalleryImage'
-    import DatePicker from "./DatePicker";
+    import DatePicker from './DatePicker'
 
     export default {
         name: 'GalleryWrapper',
@@ -113,7 +113,7 @@
         flex-basis: 25%;
     }
 
-    .filter{
+    .filter {
         width: 70%;
         display: flex;
         flex-direction: row;

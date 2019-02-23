@@ -12,7 +12,7 @@
                         <v-text-field prepend-icon="lock" name="Password" label="Password" type="password"
                                       v-model="password" required></v-text-field>
                         <v-card-actions>
-                            <v-btn primary large block @click="handleSubmit">Register</v-btn>
+                            <v-btn primary large block @click="handleSubmit">Login</v-btn>
                         </v-card-actions>
                     </v-form>
                 </v-card>
