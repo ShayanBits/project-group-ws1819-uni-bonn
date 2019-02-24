@@ -1,19 +1,19 @@
 <template>
   <div>
-    <SingleImage v-bind:path="metadata.path" v-bind:label="metadata.label"/>
+    <ImageContainerFull v-bind:path="metadata.path" v-bind:label="metadata.label"/>
     <GalleryWrapper type="bottom"/>
   </div>
 </template>
 
 <script>
-  import SingleImage from "../components/FullscreenImageComponent"
+  import ImageContainerFull from "../components/ImageContainerFull"
   import GalleryWrapper from '../components/GalleryWrapper'
 
   export default {
     name: 'gallery',
     components: {
       GalleryWrapper,
-      SingleImage,
+      ImageContainerFull,
     },
     computed: {
       metadata() {

@@ -56,7 +56,7 @@ export default new Vuex.Store({
         },
         // TODO: only call this when page is loaded with an id, otherwise index can be known without expensive indexOf
         adjacentId: (state) => (id, direction) => {
-            const maxIndex = Object.keys(state.gallery.images).length
+            const maxIndex = Object.keys(state.gallery.images).length - 1
             const images = Object.keys(state.gallery.images)
             const currentIndex = images.indexOf(id)
             let newIndex = currentIndex
