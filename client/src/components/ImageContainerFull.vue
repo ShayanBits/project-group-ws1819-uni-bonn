@@ -17,7 +17,7 @@
   import ImageContainer from "./ImageContainer"
 
   export default {
-    name: "SingleImage",
+    name: "ImageContainerFull",
     components: {ImageContainer},
     props: {
       id: Number,
