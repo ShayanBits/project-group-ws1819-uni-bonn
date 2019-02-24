@@ -2,26 +2,22 @@ const express = require('express')
 const router = express.Router()
 const multer = require('multer')
 const mime = require('mime')
+const readChunk = require('read-chunk')
+const fileType = require('file-type')
 const jwt = require('jsonwebtoken')
 const config = require('../config.js')
 
-
-
 const Image = require('../models/image')
 const Tag = require('../models/tag')
+
+const allowedMIME = /image\/jpeg|image\/png/
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'public/img/')
     },
     filename: (req, file, cb) => {
-        const allowed = /jpeg|jpg|png/
-        const valid = allowed.test(file.mimetype)
-        if (valid) {
-            cb(null, Date.now() + '.' + mime.getExtension(file.mimetype))
-        } else {
-            cb('Error: wrong filetype')
-        }
+        cb(null, Date.now() + '.' + mime.getExtension(file.mimetype))
     },
 })
 
@@ -29,7 +25,7 @@ const upload = multer({storage})
 
 //add middleware only for the following subrouter
 
-const checkAccess = function (req,res,next) {
+const checkAccess = function (req, res, next) {
     req.haveAccess = false
     const token = req.cookies.jwt
     if (token !== undefined) {
@@ -46,13 +42,12 @@ const checkAccess = function (req,res,next) {
                 req.user = decoded.user
             }
         })
-    }
-    else req.responseText = 'Please log in to be able to upload pictures'
+    } else req.responseText = 'Please log in to be able to upload pictures'
     // res.status(401).send('You need to be logged in to be able to upload pictures\'')
     next()
 }
 
-router.use('/images/upload', checkAccess )
+router.use('/images/upload', checkAccess)
 
 router.post('/getImageJson', (req, res) => {
     Image
@@ -60,7 +55,7 @@ router.post('/getImageJson', (req, res) => {
         .populate('user', 'name')
         .exec((err, images) => {
             res.send({images})
-        });
+        })
 })
 
 
@@ -77,29 +72,38 @@ router.post('/getTags', (req, res) => {
     })
 })
 router.post('/images/upload', upload.single('image'), (req, res) => {
-    if (req.file && req.haveAccess) {
-        const tags = JSON.parse(req.body.tags)
-        Image.create({
-            user: req.user.id,
-            label: req.body.label,
-            path: req.file.filename,
-            tags: tags,
-        }, (err, i) => {
-            res.send({success: true, message: 'image saved', image: i})
-        })
-        if(tags.length > 0) {
-            tags.forEach(tag => {
-                Tag.find({name: tag}, (err, foundTags) => {
-                    if (foundTags.length === 0) {
-                        Tag.create({name: tag, images: 1})
-                    } else {
-                        Tag.findOneAndUpdate({_id: foundTags[0].id}, {$inc: {'images': 1}}).exec()
-                    }
+    if (req.haveAccess) {
+        if (req.file) {
+            const buffer = readChunk.sync(req.file.path, 0, fileType.minimumBytes)
+            const bufferFileType = fileType(buffer)
+            const valid = allowedMIME.test(bufferFileType.mime)
+            if (valid) {
+                const tags = JSON.parse(req.body.tags)
+                Image.create({
+                    user: req.user.id,
+                    label: req.body.label,
+                    path: req.file.filename,
+                    tags: tags,
+                }, (err, i) => {
+                    res.send({success: true, message: 'image saved', image: i})
                 })
-            })
+                if (tags.length > 0) {
+                    tags.forEach(tag => {
+                        Tag.find({name: tag}, (err, foundTags) => {
+                            if (foundTags.length === 0) {
+                                Tag.create({name: tag, images: 1})
+                            } else {
+                                Tag.findOneAndUpdate({_id: foundTags[0].id}, {$inc: {'images': 1}}).exec()
+                            }
+                        })
+                    })
+                }
+            } else {
+                res.send('Wrong filetype')
+            }
         }
     } else {
-        res.send('wrong filetype or permission denied ' + req.responseText)
+        res.send('Permission denied ' + req.responseText)
     }
 })
 
