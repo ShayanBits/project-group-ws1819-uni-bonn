@@ -1,18 +1,16 @@
 <template>
     <v-dialog id="dialog" v-model="dialog" max-width="800px" style="display: flex; align-items: center">
-        <v-btn slot="activator" outline dark color=#2c3e50 @click="debugLog">
+        <v-btn slot="activator" outline dark color=#2c3e50>
             <v-icon>event</v-icon>
         </v-btn>
         <v-card>
             <v-card-text>
-                <v-container grid-list-md>
-                    <v-layout wrap>
-                        <v-flex xs12>
-                    <v-daterange :options="dateRangeOptions" @input="onDateRangeChange"></v-daterange>
-                        </v-flex>
-                    </v-layout>
-                </v-container>
+                <v-daterange :options="dateRangeOptions" @input="onDateRangeChange"></v-daterange>
             </v-card-text>
+            <v-card-actions>
+                <v-btn @click="dialog = false">Cancel</v-btn>
+                <v-btn @click="onClickApply">Apply</v-btn>
+            </v-card-actions>
         </v-card>
     </v-dialog>
 
@@ -20,52 +18,49 @@
 
 <script>
     // If you want to use in one of your components.
-    import {DateRange} from 'vuetify-daterange-picker';
-    import 'vuetify-daterange-picker/dist/vuetify-daterange-picker.css';
+    import {DateRange} from 'vuetify-daterange-picker'
+    import 'vuetify-daterange-picker/dist/vuetify-daterange-picker.css'
+    import {startOfISOWeek, endOfISOWeek, format} from 'date-fns'
 
-    let today = new Date()
-    let day = today.getDate()
-    let month = today.getMonth()+1
-    let year = today.getFullYear()
+    const dateFormat = 'YYYY-MM-DD'
+    const dateFormatHuman = 'DD/MM/YYYY'
 
-    let startDate = year.toString()+"-"+(month-1).toString()+"-"+day.toString()
-    let endDate = year.toString()+"-"+month.toString()+"-"+day.toString()
+    const minDate = '2018-11-01'
+    const today = new Date();
 
-    let veryFirstDay = '2018-11-01'
-    let dateFormat = 'DD/MM/YYYY'
+    const startDate = minDate;
+    const endDate = format(today, dateFormat)
+
+    const presets = [{
+        label: 'Everything',
+        range: [startDate, endDate],
+    }, {
+        label: 'This week',
+        range: [
+            format(startOfISOWeek(today), dateFormat),
+            format(endOfISOWeek(today), dateFormat),
+        ],
+    }]
 
     export default {
         components: {[DateRange.name]: DateRange},
         data() {
             return {
-                dateRangeOptions: {
-                    startDate: startDate,
-                    endDate: endDate,
-                    minDate: veryFirstDay,
-                    maxDate: endDate,
-                    format: dateFormat
-                },
+                dateRangeOptions: {startDate, endDate, minDate, format: dateFormatHuman, presets},
+                selectedDateRange: [startDate, endDate],
                 dialog: false,
-                pickedStartDate: '',
-                pickedEndDate: '',
             }
-        },
-        props:{
-
-
         },
         methods: {
-            onDateRangeChange() {
+            onDateRangeChange(dates) {
+                this.selectedDateRange = dates;
             },
-            debugLog(){
-                console.log('year: ' + year)
-                console.log('month: ' + month)
-                console.log('day: ' + day)
-                console.log(startDate)
-            }
+            onClickApply() {
+                this.$emit('dateRange', this.selectedDateRange)
+                this.dialog = false
+            },
         },
-        computed: {
-        }
+        computed: {},
     }
 </script>
 

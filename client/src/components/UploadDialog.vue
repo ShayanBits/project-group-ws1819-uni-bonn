@@ -46,7 +46,7 @@
                                         hint="You can assign multiple tags to your image. Press enter after entering one!"
                                         required
                                         multiple
-                                        :items="loadedTags"
+                                        :items="availableTags"
                                         small-chips
                                 >
                                     <template slot="no-data">
@@ -90,8 +90,8 @@
             }
         },
         computed: {
-            loadedTags() {
-                return this.$store.getters.updateTagArray
+            availableTags() {
+                return this.$store.getters.tags
             },
         },
         methods: {
