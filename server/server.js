@@ -1,7 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
-const multer = require('multer')
 const cookieParser = require('cookie-parser')
 const api = require('./routes/api')
 
