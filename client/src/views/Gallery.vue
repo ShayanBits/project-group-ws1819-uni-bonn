@@ -10,13 +10,6 @@
 
     export default {
         name: 'gallery',
-        mounted() {
-            this.$store.dispatch('fetchImages')
-            this.$socket.on('newImages', socket => {
-                console.log('fetching new images after socket notification')
-                this.$store.dispatch('fetchImages')
-            })
-        },
         components: {
             GalleryWrapper,
         },

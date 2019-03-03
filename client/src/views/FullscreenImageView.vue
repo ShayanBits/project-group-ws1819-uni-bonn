@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ImageContainerFull v-bind:path="metadata.path" v-bind:label="metadata.label"/>
+    <ImageContainerFull v-bind:id="id"/>
     <GalleryWrapper type="bottom"/>
   </div>
 </template>
@@ -16,9 +16,9 @@
       ImageContainerFull,
     },
     computed: {
-      metadata() {
-        return this.$store.getters.metadata(this.$route.params.id)
+      id() {
+        return this.$route.params.id
       }
-    },
+    }
   }
 </script>

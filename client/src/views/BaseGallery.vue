@@ -12,8 +12,12 @@
     export default {
         components: {uploadOverlay},
         name: "BaseGallery",
-        beforeCreate() {
-            // this.$store.dispatch('fetchImages')
+        mounted() {
+            this.$store.dispatch('fetchImages')
+            this.$socket.on('newImages', socket => {
+                console.log('fetching new images after socket notification')
+                this.$store.dispatch('fetchImages')
+            })
         },
     }
 </script>
