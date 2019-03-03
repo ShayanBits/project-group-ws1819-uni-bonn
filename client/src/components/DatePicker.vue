@@ -20,16 +20,17 @@
     // If you want to use in one of your components.
     import {DateRange} from 'vuetify-daterange-picker'
     import 'vuetify-daterange-picker/dist/vuetify-daterange-picker.css'
-    import {startOfISOWeek, endOfISOWeek, format} from 'date-fns'
+    import {startOfISOWeek, endOfISOWeek, format, subDays, addDays} from 'date-fns'
 
     const dateFormat = 'YYYY-MM-DD'
     const dateFormatHuman = 'DD/MM/YYYY'
 
     const minDate = '2018-11-01'
     const today = new Date();
+    const tomorrow = addDays(new Date(), 1);
 
     const startDate = minDate;
-    const endDate = format(today, dateFormat)
+    const endDate = format(tomorrow, dateFormat)
 
     const presets = [{
         label: 'Everything',
@@ -37,8 +38,8 @@
     }, {
         label: 'This week',
         range: [
-            format(startOfISOWeek(today), dateFormat),
-            format(endOfISOWeek(today), dateFormat),
+            format(startOfISOWeek(tomorrow), dateFormat),
+            format(endOfISOWeek(tomorrow), dateFormat),
         ],
     }]
 
