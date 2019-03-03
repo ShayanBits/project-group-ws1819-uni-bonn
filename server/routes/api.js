@@ -58,13 +58,17 @@ router.post('/getImageJson', (req, res) => {
 
 router.use('/updateImageData', checkAccess)
 router.post('/updateImageData', (req, res) => {
-  const {_id, label} = req.body
+  const {_id, formData} = req.body
+  const {label, author, tags} = formData
   Image.findOne({_id}).populate('user').exec((err, image) => {
     if (err) {
       res.send({error: 404, message: 'Image not found'})
     }
     if (req.haveAccess && req.user.id === image.user._id.toString()) {
       image.label = label
+      image.author = author
+      image.tags = tags
+      console.log('author', author)
       image.save((err, image) => {
         if (err) {
           return console.log(err)
@@ -122,6 +126,7 @@ router.post('/images/upload', upload.single('image'), (req, res) => {
         Image.create({
           user: req.user.id,
           label: req.body.label,
+          author: req.body.author,
           path: req.file.filename,
           tags: tags,
         }, (err, i) => {

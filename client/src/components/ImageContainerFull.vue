@@ -6,14 +6,26 @@
         <v-card>
           <v-card-title primary-title class="headline grey lighten-2">Edit image data</v-card-title>
           <v-card-text>
-            <v-form class="two-column-form">
+            <v-form class="three-column-form">
               <div>
                 <v-text-field label="User" v-model="user" disabled></v-text-field>
               </div>
               <div>
-                <v-text-field label="Label" v-model="label"></v-text-field>
+                <v-text-field label="Label" v-model="formData.label"></v-text-field>
+              </div>
+              <div>
+                <v-text-field label="Author" v-model="formData.author"></v-text-field>
               </div>
             </v-form>
+            <v-combobox
+              v-model="formData.tags"
+              hide-selected
+              label="Tags"
+              multiple
+              :items="availableTags"
+              small-chips
+            >
+            </v-combobox>
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
@@ -64,7 +76,11 @@
         dialogEdit: false,
         dialogDelete: false,
         user: null,
-        label: null,
+        formData: {
+          label: null,
+          author: null,
+          tags: [],
+        },
         requestStatus: STATUS.IDLE,
         STATUS,
       }
@@ -79,6 +95,9 @@
           return user.id === this.image.user._id
         }
         return false
+      },
+      availableTags() {
+        return this.$store.getters.tags
       },
     },
     methods: {
@@ -95,7 +114,7 @@
       },
       handleClickEdit() {
         this.requestStatus = STATUS.PENDING
-        postJson('/updateImageData', {_id: this.image._id, label: this.label})
+        postJson('/updateImageData', {_id: this.image._id, formData: this.formData})
           .then(res => {
             if (res.error !== 0) {
               this.requestStatus = STATUS.ERROR
@@ -125,8 +144,12 @@
       },
       setDefaultForm() {
         this.user = this.image.user ? this.image.user.name : ''
-        this.label = this.image.label
-      }
+        this.formData = {
+          label: this.image.label,
+          author: this.image.author,
+          tags: this.image.tags,
+        }
+      },
     },
   }
 </script>
@@ -141,12 +164,12 @@
     display: block;
   }
 
-  .two-column-form {
+  .three-column-form {
     display: flex;
   }
 
-  .two-column-form > div {
-    flex-basis: 50%;
+  .three-column-form > div {
+    flex-basis: 33%;
   }
 
   #left,
