@@ -47,15 +47,18 @@ export default new Vuex.Store({
         },
     },
     getters: {
-        tags: (state) => {
+        tags: state => {
             return state.savedTags
         },
-        metadata: (state) => (id) => {
+        metadata: state => id => {
             const image = state.gallery.images[id]
             return image ? {path: image.path, label: image.label} : {path: '', label: ''}
         },
+        image: state => id => {
+            return state.gallery.images[id]
+        },
         // TODO: only call this when page is loaded with an id, otherwise index can be known without expensive indexOf
-        adjacentId: (state) => (id, direction) => {
+        adjacentId: state => (id, direction) => {
             const maxIndex = Object.keys(state.gallery.images).length - 1
             const images = Object.keys(state.gallery.images)
             const currentIndex = images.indexOf(id)
