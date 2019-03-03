@@ -1,3 +1,10 @@
+export const STATUS = {
+  IDLE: 0,
+  PENDING: 1,
+  SUCCESS: 2,
+  ERROR: 3,
+}
+
 export default function postJson(url, data, api = true) {
   return fetch(new Request((api ? '/api' : '') + url, {
     credentials: 'include',

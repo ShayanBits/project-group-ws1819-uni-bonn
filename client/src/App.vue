@@ -1,29 +1,31 @@
 <template>
-    <div data-app id="app">
-        <v-snackbar v-model="snackbarRequireAdmin">
-            This requires Admin privileges.
-            <v-btn color="pink" flat @click="snackbarRequireAdmin = false">Close</v-btn>
-        </v-snackbar>
-        <div id="nav">
-            <div class="router-links">
-                <router-link to="/about">About</router-link>
-                <router-link to="/gallery">Gallery</router-link>
-                <router-link to="/blog">Blog</router-link>
-                <router-link to="/newsletter">Newsletter</router-link>
-                <router-link v-if="!user" to="/register">Register</router-link>
-                <router-link v-if="!user" to="/login">Login</router-link>
-                <router-link v-if="user" to="/dashboard">Dashboard</router-link>
-                <router-link v-if="user" to="/admin">Admin</router-link>
+    <v-app>
+        <div data-app id="app">
+            <v-snackbar v-model="snackbarRequireAdmin">
+                This requires Admin privileges.
+                <v-btn color="pink" flat @click="snackbarRequireAdmin = false">Close</v-btn>
+            </v-snackbar>
+            <div id="nav">
+                <div class="router-links">
+                    <router-link to="/about">About</router-link>
+                    <router-link to="/gallery">Gallery</router-link>
+                    <router-link to="/blog">Blog</router-link>
+                    <router-link to="/newsletter">Newsletter</router-link>
+                    <router-link v-if="!user" to="/register">Register</router-link>
+                    <router-link v-if="!user" to="/login">Login</router-link>
+                    <router-link v-if="user" to="/dashboard">Dashboard</router-link>
+                    <router-link v-if="user" to="/admin">Admin</router-link>
+                </div>
+                <div class="user-box" v-if="user">
+                    <span>{{user.name}} (</span><span class="logout" @click="logout">Logout</span><span>)</span>
+                </div>
             </div>
-            <div class="user-box" v-if="user">
-                <span>{{user.name}} (</span><span class="logout" @click="logout">Logout</span><span>)</span>
+            <div id="content">
+                <router-view/>
             </div>
+            <Footer/>
         </div>
-        <div id="content">
-            <router-view/>
-        </div>
-        <Footer/>
-    </div>
+    </v-app>
 </template>
 
 <style>
@@ -60,7 +62,7 @@
         color: #42b983;
     }
 
-    #content{
+    #content {
         flex-grow: 1;
     }
 
