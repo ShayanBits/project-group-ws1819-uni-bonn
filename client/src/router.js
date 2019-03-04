@@ -83,7 +83,6 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-    if (to.matched.some(record => record.meta.requiresAuth)) {
         postJson('/authenticate', {}, false).then(({user}) => {
             const requestingAdmin = to.matched.some(record => record.meta.requiresAdmin)
             if (user) {
@@ -93,16 +92,18 @@ router.beforeEach((to, from, next) => {
                 next()
             } else if (user && requestingAdmin) {
                 router.app.$root.$emit('requireAdmin')
-            } else {
+            }
+            // if not registered user want to access protected routes
+            else if( to.matched.some(record => record.meta.requiresAuth)){
                 next({
                     path: '/login',
                     params: {nextUrl: to.fullPath},
                 })
             }
+            else {
+                next()
+            }
         })
-    } else {
-        next()
-    }
 })
 
 export default router
