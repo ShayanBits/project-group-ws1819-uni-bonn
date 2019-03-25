@@ -25,8 +25,7 @@
     const dateFormat = 'YYYY-MM-DD'
     const dateFormatHuman = 'DD/MM/YYYY'
 
-    const minDate = '2018-11-01'
-    const today = new Date();
+    const minDate = '2018-11-01' // start of development
     const tomorrow = addDays(new Date(), 1);
 
     const startDate = minDate;

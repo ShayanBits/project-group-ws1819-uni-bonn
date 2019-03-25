@@ -153,7 +153,6 @@
                     method: 'POST',
                     body: formData,
                 }).then(() => {
-                    this.$socket.emit('newImages')
                     this.emptyFields()
                 })
 

@@ -120,8 +120,6 @@
               this.requestStatus = STATUS.ERROR
               return
             }
-            // TODO: only fetch this one image
-            this.$store.dispatch('fetchImages')
             this.requestStatus = STATUS.SUCCESS
             setTimeout(() => this.requestStatus = STATUS.IDLE, 2000)
           })
@@ -134,7 +132,6 @@
               this.requestStatus = STATUS.ERROR
               return
             }
-            this.$store.dispatch('fetchImages')
             this.requestStatus = STATUS.SUCCESS
             setTimeout(() => {
               this.requestStatus = STATUS.IDLE

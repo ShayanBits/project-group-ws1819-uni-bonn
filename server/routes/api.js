@@ -47,110 +47,115 @@ const checkAccess = function (req, res, next) {
   next()
 }
 
-router.post('/getImageJson', (req, res) => {
-  Image
-    .find()
-    .populate('user', 'name')
-    .exec((err, images) => {
-      res.send({images})
-    })
-})
-
-router.use('/updateImageData', checkAccess)
-router.post('/updateImageData', (req, res) => {
-  const {_id, formData} = req.body
-  const {label, author, tags} = formData
-  Image.findOne({_id}).populate('user').exec((err, image) => {
-    if (err) {
-      res.send({error: 404, message: 'Image not found'})
-    }
-    if (req.haveAccess && req.user.id === image.user._id.toString()) {
-      image.label = label
-      image.author = author
-      image.tags = tags
-      console.log('author', author)
-      image.save((err, image) => {
-        if (err) {
-          return console.log(err)
-        }
-        res.send({error: 0, message: 'Image updated', image})
+module.exports = function (io) {
+  router.post('/getImageJson', (req, res) => {
+    Image
+      .find()
+      .populate('user', 'name')
+      .exec((err, images) => {
+        res.send({images})
       })
-    } else {
-      res.send({error: 403, message: 'Unauthorized'})
-    }
   })
-})
 
-router.use('/deleteImage', checkAccess)
-router.post('/deleteImage', (req, res) => {
-  const {_id} = req.body
-  Image.findOne({_id}).populate('user').exec((err, image) => {
-    if (err) {
-      res.send({error: 404, message: 'Image not found'})
-    }
-    if (req.haveAccess && req.user.id === image.user._id.toString()) {
-      Image.findByIdAndRemove(_id, errRemove => {
-        if (err) {
-          return console.log(err)
-        }
-        res.send({error: 0, message: 'Image deleted'})
-      })
-    } else {
-      res.send({error: 403, message: 'Unauthorized'})
-    }
-  })
-})
-
-router.post('/getTag', (req, res) => {
-  const {name} = req.body
-  Tag.find({name}, (err, tags) => {
-    res.send(tags)
-  })
-})
-
-router.post('/getTags', (req, res) => {
-  Tag.find((err, tags) => {
-    res.send(tags)
-  })
-})
-
-router.use('/images/upload', checkAccess)
-router.post('/images/upload', upload.single('image'), (req, res) => {
-  if (req.haveAccess) {
-    if (req.file) {
-      const buffer = readChunk.sync(req.file.path, 0, fileType.minimumBytes)
-      const bufferFileType = fileType(buffer)
-      const valid = allowedMIME.test(bufferFileType.mime)
-      if (valid) {
-        const tags = JSON.parse(req.body.tags)
-        Image.create({
-          user: req.user.id,
-          label: req.body.label,
-          author: req.body.author,
-          path: req.file.filename,
-          tags: tags,
-        }, (err, i) => {
-          res.send({success: true, message: 'image saved', image: i})
-        })
-        if (tags.length > 0) {
-          tags.forEach(tag => {
-            Tag.find({name: tag}, (err, foundTags) => {
-              if (foundTags.length === 0) {
-                Tag.create({name: tag, images: 1})
-              } else {
-                Tag.findOneAndUpdate({_id: foundTags[0].id}, {$inc: {'images': 1}}).exec()
-              }
-            })
-          })
-        }
-      } else {
-        res.send('Wrong filetype')
+  router.use('/updateImageData', checkAccess)
+  router.post('/updateImageData', (req, res) => {
+    const {_id, formData} = req.body
+    const {label, author, tags} = formData
+    Image.findOne({_id}).populate('user').exec((err, image) => {
+      if (err) {
+        res.send({error: 404, message: 'Image not found'})
       }
+      if (req.haveAccess && req.user.id === image.user._id.toString()) {
+        const oldTags = image.tags
+        image.label = label
+        image.author = author
+        image.tags = tags
+        image.save((err, savedImage) => {
+          if (err) {
+            return console.log(err)
+          }
+          io.emit('newImages')
+          res.send({error: 0, message: 'Image updated', savedImage})
+          oldTags.forEach(tagName => decrementTag(tagName))
+          tags.forEach(tagName => incrementTag(tagName))
+        })
+      } else {
+        res.send({error: 403, message: 'Unauthorized'})
+      }
+    })
+  })
+
+  router.use('/deleteImage', checkAccess)
+  router.post('/deleteImage', (req, res) => {
+    const {_id} = req.body
+    Image.findOne({_id}).populate('user').exec((err, image) => {
+      if (err) {
+        res.send({error: 404, message: 'Image not found'})
+      }
+      if (req.haveAccess && req.user.id === image.user._id.toString()) {
+        Image.findByIdAndRemove(_id, errRemove => {
+          if (errRemove) {
+            return console.log(errRemove)
+          } else {
+            io.emit('newImages')
+            res.send({error: 0, message: 'Image deleted'})
+            image.tags.forEach(tagName => decrementTag(tagName))
+          }
+        })
+      } else {
+        res.send({error: 403, message: 'Unauthorized'})
+      }
+    })
+  })
+
+  router.post('/getTags', (req, res) => {
+    Tag.find({images: {$gt: 0}}).sort({images: -1}).exec((err, tags) => {
+      res.send(tags)
+    })
+  })
+
+  router.use('/images/upload', checkAccess)
+  router.post('/images/upload', upload.single('image'), (req, res) => {
+    if (req.haveAccess) {
+      if (req.file) {
+        const buffer = readChunk.sync(req.file.path, 0, fileType.minimumBytes)
+        const bufferFileType = fileType(buffer)
+        const valid = allowedMIME.test(bufferFileType.mime)
+        if (valid) {
+          const tags = JSON.parse(req.body.tags)
+          Image.create({
+            user: req.user.id,
+            label: req.body.label,
+            author: req.body.author,
+            path: req.file.filename,
+            tags: tags,
+          }, (err, i) => {
+            io.emit('newImages')
+            res.send({success: true, message: 'image saved', image: i})
+          })
+          if (tags.length > 0) {
+            tags.forEach(tagName => incrementTag(tagName))
+          }
+        } else {
+          res.send('Wrong filetype')
+        }
+      }
+    } else {
+      res.send('Permission denied ' + req.responseText)
     }
-  } else {
-    res.send('Permission denied ' + req.responseText)
-  }
-})
+  })
 
+  return router
+}
 
-module.exports = router
+function incrementTag(name) {
+  Tag.findOneAndUpdate({name}, {$inc: {'images': 1}}, (err, tag) => {
+    if (!tag) {
+      Tag.create({name, images: 1})
+    }
+  })
+}
+
+function decrementTag(name) {
+  Tag.findOneAndUpdate({name}, {$inc: {'images': -1}}).exec()
+}
