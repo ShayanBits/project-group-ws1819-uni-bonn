@@ -1,17 +1,20 @@
 # Gallery
 
+## Requirements
 
-### Install the App ###
-1. Install `Yarn`
-2. use `yarn` command in both `server` and `client` directories to install dependencies.
+- yarn / npm
+- MongoDB (local on port 27017)
 
+## Installation
 
-### Install and run MongoDB ###
+- Run `yarn` in both the `server` and the `client` directory to install dependencies
+- Run `yarn serve` command in `client` directory
+- Run `yarn dev` command in `server` directory
+- Local URL with port is displayed in the terminal (e.g. http://localhost:8081)
 
-Before starting the application you need to install and run MongoDB
+## Init script
 
+There is also an init script which starts the web server and the Vue dev server in the same terminal.
+Usage requires a zsh shell and a global installation of concurrently (`yarn global add concurrently`).
 
-
-### Run the App ###
-1. use `yarn serve` command in `client` directory
-2. use `yarn dev` command in `server` directory
+- Run with `./init.sh`
