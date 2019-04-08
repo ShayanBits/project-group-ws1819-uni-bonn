@@ -66,16 +66,17 @@ module.exports = function (router) {
         jwt.verify(token, config.secret, function (err, decoded) {
             if (err) {
                 res.send(err)
+            } else {
+                let expDate = decoded.exp
+                let createdDate = decoded.iat
+                console.log('Remaining valid time (more than half of expiry time):', expDate - (Date.now() / 1000))
+                if (expDate - createdDate > 2 * (expDate - (Date.now() / 1000))) {
+                    console.log('Remaining valid time (less than half of expiry time):', expDate - (Date.now() / 1000), 'Extending validation time')
+                    const newUser = Object.assign({}, decoded.user, {_id: decoded.user.id})
+                    sendToken(res, createToken(newUser), true)
+                }
+                res.send(decoded)
             }
-            let expDate = decoded.exp
-            let createdDate = decoded.iat
-            console.log('Remaining valid time (more than half of expiry time):' , expDate-(Date.now()/1000))
-            if(expDate-createdDate > 2*(expDate - (Date.now()/1000))) {
-                console.log('Remaining valid time (less than half of expiry time):' , expDate-(Date.now()/1000), 'Extending validation time')
-                const newUser = Object.assign({}, decoded.user, {_id: decoded.user.id})
-                sendToken(res, createToken(newUser), true)
-            }
-            res.send(decoded)
         })
     })
 }

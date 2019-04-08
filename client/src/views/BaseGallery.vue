@@ -1,17 +1,21 @@
 <template>
     <div>
-        <uploadOverlay/>
+        <uploadOverlay v-if="user"/>
         <router-view></router-view>
     </div>
 </template>
 
 <script>
-    import postJson from '../mixins/postJson'
     import uploadOverlay from '../components/UploadDialog'
 
     export default {
         components: {uploadOverlay},
         name: "BaseGallery",
+        computed: {
+            user() {
+                return this.$store.getters.user
+            },
+        },
         mounted() {
             this.$store.dispatch('fetchImages')
             this.$socket.on('newImages', socket => {

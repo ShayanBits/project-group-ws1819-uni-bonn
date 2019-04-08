@@ -57,13 +57,25 @@
     (term, image) => image.label === term,
     (term, image) => image.tags.includes(term),
     (term, image) => image.user && image.user.name === getActualTerm(term, 'user'),
-    (term, image) => image.createdAt && image.createdAt <= new Date(getActualTerm(term, 'before')),
-    (term, image) => image.createdAt && image.createdAt >= new Date(getActualTerm(term, 'after')),
+    (term, image) => image.author && image.author === getActualTerm(term, 'author'),
+    (term, image) => image.createdAt && formatYMD(image.createdAt) < formatYMD(new Date(getActualTerm(term, 'before'))),
+    (term, image) => {
+      const actualTerm = getActualTerm(term, 'after')
+      // necessary because new Date(null) returns 1970-01-01
+      if (actualTerm === null) {
+        return false
+      }
+      return image.createdAt && formatYMD(image.createdAt) > formatYMD(new Date(actualTerm))
+    },
   ]
+
+  function formatYMD(date) {
+    return format(date, 'YYYY-MM-DD')
+  }
 
   function getActualTerm(term, prefix) {
     const prefixLength = prefix.length + 1
-    if (term.substr(0, prefixLength === prefix + ':')) {
+    if (term.substr(0, prefixLength) === prefix + ':') {
       return term.substr(prefixLength, term.length - prefixLength)
     }
     return null
@@ -77,8 +89,8 @@
       if (!image.createdAt) {
         return false
       }
-      const imageDateYMD = format(new Date(image.createdAt), 'YYYY-MM-DD')
-      if (imageDateYMD <= dateStart || dateEnd <= imageDateYMD) {
+      const imageDateYMD = formatYMD(new Date(image.createdAt))
+      if (imageDateYMD < dateStart || dateEnd < imageDateYMD) {
         return false
       }
     }
@@ -89,6 +101,7 @@
       const term = negated ? fullTerm.substr(1) : fullTerm
       for (const condition of conditions) {
         const passed = condition(term, image)
+        console.log(passed, condition);
         if (passed && negated) {
           return false
         }

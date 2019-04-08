@@ -2,7 +2,6 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser')
-const api = require('./routes/api')
 
 const app = express()
 const port = process.env.port || 3000
@@ -10,7 +9,9 @@ const port = process.env.port || 3000
 const server = require('http').createServer(app)
 const io = require('socket.io').listen(server)
 
-io.on('connection', socket => {
+const api = require('./routes/api')(io)
+
+io.on('connection', () => {
     console.log('connected')
 })
 
@@ -28,8 +29,7 @@ app.use(cookieParser())
 app.use(allowCrossDomain)
 
 mongoose.set('useCreateIndex', true);
-mongoose.connect(mongoUrl + '/' + mongoDbName, {useNewUrlParser: true})
-
+mongoose.connect(mongoUrl + '/' + mongoDbName, {useNewUrlParser: true, useFindAndModify: false})
 
 app.use(express.static(__dirname + '/public'))
 app.use(bodyParser.json())
@@ -39,7 +39,6 @@ router.use(bodyParser.urlencoded({extended: false}))
 router.use(bodyParser.json())
 require('./routes/authentication')(router)
 app.use('/api',api)
-
 
 app.use(router)
 
